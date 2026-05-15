@@ -1,0 +1,32 @@
+# Build outputs
+target/
+
+# Logs
+*.log
+
+# Runtime / uploaded files
+storage/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+
+# OS clutter
+.DS_Store
+Thumbs.db
+
+# Local environment files
+.env
+
+# Local QA / generated artifacts
+qa/
+docs/system-designs/png/
+SYSTEM_SCREEN_DESIGNS.pdf
+SYSTEM_SCREEN_DESIGNS.docx
+
+# Local-only planning notes
+PROJECT_BUILD_ORDER_README.md
