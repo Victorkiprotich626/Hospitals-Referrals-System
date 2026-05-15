@@ -1,0 +1,13 @@
+.git
+.gitignore
+.idea/
+.vscode/
+target/
+qa/
+storage/
+docs/
+SYSTEM_SCREEN_DESIGNS.docx
+SYSTEM_SCREEN_DESIGNS.pdf
+PROJECT_BUILD_ORDER_README.md
+*.log
+*.iml
