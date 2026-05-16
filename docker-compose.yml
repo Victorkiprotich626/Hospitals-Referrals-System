@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: hospital-referrals-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-hospital_referrals}
+      MYSQL_USER: ${MYSQL_USER:-referrals}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-referrals}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "${MYSQL_HOST_PORT:-3307}:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD --silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hospital-referrals-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-hospital_referrals}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-referrals}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-referrals}
+      APP_BOOTSTRAP_SUPER_ADMIN_EMAIL: ${APP_BOOTSTRAP_SUPER_ADMIN_EMAIL:-superadmin@referrals.local}
+      APP_BOOTSTRAP_SUPER_ADMIN_PASSWORD: ${APP_BOOTSTRAP_SUPER_ADMIN_PASSWORD:-ChangeMe123!}
+      APP_STORAGE_ATTACHMENTS_DIR: ${APP_STORAGE_ATTACHMENTS_DIR:-/app/storage/referral-attachments}
+      SERVER_PORT: 8080
+    ports:
+      - "${APP_HOST_PORT:-8080}:8080"
+    volumes:
+      - referral-attachments:/app/storage/referral-attachments
+
+volumes:
+  mysql-data:
+  referral-attachments:
