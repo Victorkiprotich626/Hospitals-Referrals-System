@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:hospital_referrals}?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USERNAME:root}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:24875985}}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  thymeleaf:
+    cache: false
+  flyway:
+    enabled: true
+
+server:
+  port: ${SERVER_PORT:8081}
+
+app:
+  bootstrap:
+    super-admin:
+      first-name: Platform
+      last-name: Admin
+      email: ${APP_BOOTSTRAP_SUPER_ADMIN_EMAIL:superadmin@referrals.local}
+      password: ${APP_BOOTSTRAP_SUPER_ADMIN_PASSWORD:ChangeMe123!}
+  storage:
+    attachments-dir: ${APP_STORAGE_ATTACHMENTS_DIR:storage/referral-attachments}
