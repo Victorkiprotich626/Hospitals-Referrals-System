@@ -11,3 +11,10 @@ public interface HospitalRepository extends JpaRepository<Hospital, Long> {
     boolean existsByCodeIgnoreCaseAndIdNot(String code, Long id);
 
     boolean existsByNameIgnoreCase(String name);
+
+    boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
+
+    List<Hospital> findAllByOrderByNameAsc();
+
+    List<Hospital> findAllByEnabledTrueOrderByNameAsc();
+}
