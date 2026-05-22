@@ -26,3 +26,42 @@ public interface UserRepository extends JpaRepository<AppUser, Long> {
     boolean existsByEmailIgnoreCase(String email);
 
     boolean existsByEmailIgnoreCaseAndIdNot(String email, Long id);
+
+    @Query("""
+        select distinct u
+        from AppUser u
+        join fetch u.roles r
+        left join fetch u.hospital h
+        where r = :role
+        order by h.name asc, u.firstName asc, u.lastName asc
+        """)
+    List<AppUser> findAllByRole(RoleName role);
+
+    @Query("""
+        select distinct u
+        from AppUser u
+        join fetch u.roles r
+        left join fetch u.department d
+        left join fetch u.doctorProfile dp
+        where u.hospital.id = :hospitalId
+          and r in :roles
+        order by u.firstName asc, u.lastName asc
+        """)
+    List<AppUser> findAllByHospitalIdAndRoles(Long hospitalId, Set<RoleName> roles);
+
+    @Query("""
+        select distinct u
+        from AppUser u
+        join fetch u.roles r
+        left join fetch u.department d
+        left join fetch u.doctorProfile dp
+        where dp.id = :doctorProfileId
+          and r in :roles
+        order by u.firstName asc, u.lastName asc
+        """)
+    List<AppUser> findAllByDoctorProfileIdAndRoles(Long doctorProfileId, Set<RoleName> roles);
+
+    long countByHospitalId(Long hospitalId);
+
+    long countByHospitalIdAndEnabledTrue(Long hospitalId);
+}
