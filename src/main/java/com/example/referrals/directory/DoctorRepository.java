@@ -25,3 +25,18 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
         order by d.lastName asc, d.firstName asc
         """)
     List<Doctor> findAllEnabledByHospitalId(Long hospitalId);
+
+    @Query("""
+        select d
+        from Doctor d
+        left join fetch d.department dept
+        where d.id = :doctorId and d.hospital.id = :hospitalId
+        """)
+    Optional<Doctor> findByIdAndHospitalId(Long doctorId, Long hospitalId);
+
+    boolean existsByHospitalIdAndEmailIgnoreCase(Long hospitalId, String email);
+
+    boolean existsByHospitalIdAndEmailIgnoreCaseAndIdNot(Long hospitalId, String email, Long doctorId);
+
+    long countByHospitalIdAndEnabledTrue(Long hospitalId);
+}
