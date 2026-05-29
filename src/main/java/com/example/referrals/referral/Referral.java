@@ -217,3 +217,172 @@ public class Referral extends AuditableEntity {
     public boolean isClosed() {
         return status != null && status.isClosed();
     }
+
+    public LocalDateTime getSlaDueAt() {
+        if (getCreatedAt() == null || priority == null) {
+            return null;
+        }
+        return getCreatedAt().plus(priority.getSlaDuration());
+    }
+
+    public boolean isOverdue() {
+        LocalDateTime dueAt = getSlaDueAt();
+        return !isClosed() && dueAt != null && LocalDateTime.now().isAfter(dueAt);
+    }
+
+    public boolean isDueToday() {
+        LocalDateTime dueAt = getSlaDueAt();
+        if (isClosed() || dueAt == null) {
+            return false;
+        }
+        Duration remaining = Duration.between(LocalDateTime.now(), dueAt);
+        return !remaining.isNegative() && remaining.toHours() < 24;
+    }
+
+    public String getSlaBadgeLabel() {
+        if (isClosed()) {
+            return "Closed";
+        }
+        if (isOverdue()) {
+            return "Overdue";
+        }
+        if (isDueToday()) {
+            return "Due today";
+        }
+        return "On track";
+    }
+
+    public String getSlaBadgeClass() {
+        if (isClosed()) {
+            return "sla-closed";
+        }
+        if (isOverdue()) {
+            return "sla-overdue";
+        }
+        if (isDueToday()) {
+            return "sla-due-soon";
+        }
+        return "sla-on-track";
+    }
+
+    public String getWaitingLabel() {
+        if (getCreatedAt() == null || isClosed()) {
+            return null;
+        }
+        Duration age = Duration.between(getCreatedAt(), LocalDateTime.now());
+        long totalHours = Math.max(1, age.toHours());
+        if (totalHours < 24) {
+            return "Waiting " + totalHours + (totalHours == 1 ? " hour" : " hours");
+        }
+        long totalDays = Math.max(1, age.toDays());
+        return "Waiting " + totalDays + (totalDays == 1 ? " day" : " days");
+    }
+
+    public String getSlaDetailLabel() {
+        LocalDateTime dueAt = getSlaDueAt();
+        if (dueAt == null) {
+            return null;
+        }
+        if (isClosed()) {
+            return "Closed on " + getStatus().getDisplayName().toLowerCase();
+        }
+        if (isOverdue()) {
+            Duration overdueFor = Duration.between(dueAt, LocalDateTime.now());
+            long totalHours = Math.max(1, overdueFor.toHours());
+            if (totalHours < 24) {
+                return "Overdue by " + totalHours + (totalHours == 1 ? " hour" : " hours");
+            }
+            long totalDays = Math.max(1, overdueFor.toDays());
+            return "Overdue by " + totalDays + (totalDays == 1 ? " day" : " days");
+        }
+        Duration remaining = Duration.between(LocalDateTime.now(), dueAt);
+        long totalHours = Math.max(1, remaining.toHours());
+        if (totalHours < 24) {
+            return "Due in " + totalHours + (totalHours == 1 ? " hour" : " hours");
+        }
+        long totalDays = Math.max(1, remaining.toDays());
+        return "Due in " + totalDays + (totalDays == 1 ? " day" : " days");
+    }
+
+    public boolean isUrgentCase() {
+        return priority == ReferralPriority.HIGH || priority == ReferralPriority.URGENT;
+    }
+
+    public boolean isActionableFor(Long hospitalId) {
+        return !isClosed() && isIncomingFor(hospitalId);
+    }
+
+    public boolean isAwaitingResponseFor(Long hospitalId) {
+        return !isClosed() && isOutgoingFor(hospitalId);
+    }
+
+    public String getSlaBadgeLabelFor(Long hospitalId) {
+        if (isClosed()) {
+            return "Closed";
+        }
+        if (isAwaitingResponseFor(hospitalId)) {
+            return "Awaiting response";
+        }
+        if (isOverdue()) {
+            return "Overdue";
+        }
+        if (isDueToday()) {
+            return "Due today";
+        }
+        return "On track";
+    }
+
+    public String getSlaBadgeClassFor(Long hospitalId) {
+        if (isClosed()) {
+            return "sla-closed";
+        }
+        if (isAwaitingResponseFor(hospitalId)) {
+            return "sla-awaiting";
+        }
+        if (isOverdue()) {
+            return "sla-overdue";
+        }
+        if (isDueToday()) {
+            return "sla-due-soon";
+        }
+        return "sla-on-track";
+    }
+
+    public String getSlaDetailLabelFor(Long hospitalId) {
+        if (isClosed()) {
+            return getSlaDetailLabel();
+        }
+        if (isAwaitingResponseFor(hospitalId)) {
+            String targetHospital = toHospital != null ? toHospital.getName() : "the receiving hospital";
+            return "Awaiting response from " + targetHospital;
+        }
+        return getSlaDetailLabel();
+    }
+
+    public String getWaitingLabelFor(Long hospitalId) {
+        String base = getWaitingLabel();
+        if (base == null) {
+            return null;
+        }
+        if (isAwaitingResponseFor(hospitalId)) {
+            return base.replace("Waiting", "Sent");
+        }
+        return base;
+    }
+
+    public String slaBadgeLabelFor(Long hospitalId) {
+        return getSlaBadgeLabelFor(hospitalId);
+    }
+
+    public String slaBadgeClassFor(Long hospitalId) {
+        return getSlaBadgeClassFor(hospitalId);
+    }
+
+    public String slaDetailLabelFor(Long hospitalId) {
+        return getSlaDetailLabelFor(hospitalId);
+    }
+
+    public String waitingLabelFor(Long hospitalId) {
+        return getWaitingLabelFor(hospitalId);
+    }
+}
