@@ -8,3 +8,14 @@ public enum ReferralAttachmentType {
     DISCHARGE_SUMMARY("Discharge Summary"),
     CLINICAL_NOTE("Clinical Note"),
     OTHER("Other");
+
+    private final String displayName;
+
+    ReferralAttachmentType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+}
