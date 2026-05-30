@@ -10,3 +10,12 @@ public enum ReferralEventType {
     NOTE_ADDED("Note Added");
 
     private final String displayName;
+
+    ReferralEventType(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+}
