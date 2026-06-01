@@ -131,3 +131,98 @@ public class NotificationService {
             user -> buildReferralLink(user, referral)
         );
     }
+
+    public void notifyReferralAttachmentAdded(Referral referral, String fileName) {
+        Map<Long, AppUser> recipients = new LinkedHashMap<>();
+        recipientsForHospital(referral.getFromHospital().getId()).forEach(user -> recipients.put(user.getId(), user));
+        recipientsForHospital(referral.getToHospital().getId()).forEach(user -> recipients.put(user.getId(), user));
+        recipientsForAssignedDoctor(referral).forEach(user -> recipients.put(user.getId(), user));
+
+        createNotifications(
+            referral,
+            NotificationType.REFERRAL_ATTACHMENT_ADDED,
+            "Referral attachment uploaded",
+            fileName + " was uploaded to " + referral.getReferenceNumber() + ".",
+            recipients.values().stream().toList(),
+            user -> buildReferralLink(user, referral)
+        );
+    }
+
+    private void createNotifications(Referral referral,
+                                     NotificationType type,
+                                     String title,
+                                     String message,
+                                     List<AppUser> recipients,
+                                     Function<AppUser, String> linkBuilder) {
+        Long currentUserId = requireCurrentUserId();
+        for (AppUser recipient : recipients) {
+            if (!recipient.isEnabled() || recipient.getId().equals(currentUserId)) {
+                continue;
+            }
+            UserNotification notification = new UserNotification();
+            notification.setRecipient(recipient);
+            notification.setReferral(referral);
+            notification.setType(type);
+            notification.setTitle(title);
+            notification.setMessage(message);
+            notification.setLink(linkBuilder.apply(recipient));
+            notificationRepository.save(notification);
+        }
+    }
+
+    private List<AppUser> recipientsForHospital(Long hospitalId) {
+        return userRepository.findAllByHospitalIdAndRoles(hospitalId, OPERATIONAL_ROLES);
+    }
+
+    private List<AppUser> recipientsForAssignedDoctor(Referral referral) {
+        if (referral.getAssignedDoctor() == null) {
+            return List.of();
+        }
+        return userRepository.findAllByDoctorProfileIdAndRoles(referral.getAssignedDoctor().getId(), Set.of(RoleName.DOCTOR));
+    }
+
+    private String buildReferralLink(AppUser user, Referral referral) {
+        RoleName role = user.getPrimaryRole();
+        if (role == RoleName.HOSPITAL_ADMIN) {
+            return "/hospital-admin/referrals/" + referral.getId();
+        }
+        if (role == RoleName.REFERRAL_OFFICER) {
+            return "/referral-officer/referrals/" + referral.getId();
+        }
+        if (role == RoleName.DOCTOR) {
+            return "/doctor/referrals/" + referral.getId();
+        }
+        if (role == RoleName.VIEWER) {
+            return "/viewer/reports";
+        }
+        return "/notifications";
+    }
+
+    private void markRead(UserNotification notification) {
+        if (notification.getReadAt() == null) {
+            notification.setReadAt(LocalDateTime.now());
+        }
+    }
+
+    private Long requireCurrentUserId() {
+        CustomUserDetails user = currentUserFacade.requireUser();
+        return user.getUserId();
+    }
+
+    private boolean matchesNotification(UserNotification notification, String query) {
+        return contains(notification.getTitle(), query)
+            || contains(notification.getMessage(), query)
+            || (notification.getType() != null && contains(notification.getType().getDisplayName(), query));
+    }
+
+    private boolean contains(String value, String query) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+    }
+
+    private String normalizeQuery(String query) {
+        if (!StringUtils.hasText(query)) {
+            return null;
+        }
+        return query.trim().toLowerCase(Locale.ROOT);
+    }
+}
