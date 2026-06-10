@@ -10,3 +10,16 @@ public class ReferralAttachmentForm {
     public ReferralAttachmentType getAttachmentType() {
         return attachmentType;
     }
+
+    public void setAttachmentType(ReferralAttachmentType attachmentType) {
+        this.attachmentType = attachmentType;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+}
