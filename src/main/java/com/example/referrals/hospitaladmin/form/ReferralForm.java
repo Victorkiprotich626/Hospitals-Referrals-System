@@ -38,3 +38,60 @@ public class ReferralForm {
     public void setPatientId(Long patientId) {
         this.patientId = patientId;
     }
+
+    public Long getSourceReferralId() {
+        return sourceReferralId;
+    }
+
+    public void setSourceReferralId(Long sourceReferralId) {
+        this.sourceReferralId = sourceReferralId;
+    }
+
+    public Long getToHospitalId() {
+        return toHospitalId;
+    }
+
+    public void setToHospitalId(Long toHospitalId) {
+        this.toHospitalId = toHospitalId;
+    }
+
+    public ReferralPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(ReferralPriority priority) {
+        this.priority = priority;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getReferralReason() {
+        return referralReason;
+    }
+
+    public void setReferralReason(String referralReason) {
+        this.referralReason = referralReason;
+    }
+
+    public String getClinicalSummary() {
+        return clinicalSummary;
+    }
+
+    public void setClinicalSummary(String clinicalSummary) {
+        this.clinicalSummary = clinicalSummary;
+    }
+
+    public String getReceivingDepartment() {
+        return receivingDepartment;
+    }
+
+    public void setReceivingDepartment(String receivingDepartment) {
+        this.receivingDepartment = receivingDepartment;
+    }
+}
