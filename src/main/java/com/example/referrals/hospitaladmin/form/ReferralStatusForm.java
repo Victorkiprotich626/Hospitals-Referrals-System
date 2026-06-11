@@ -33,3 +33,20 @@ public class ReferralStatusForm {
     public void setNote(String note) {
         this.note = note;
     }
+
+    public ReferralClosureOutcome getClosureOutcome() {
+        return closureOutcome;
+    }
+
+    public void setClosureOutcome(ReferralClosureOutcome closureOutcome) {
+        this.closureOutcome = closureOutcome;
+    }
+
+    public String getClosureSummary() {
+        return closureSummary;
+    }
+
+    public void setClosureSummary(String closureSummary) {
+        this.closureSummary = closureSummary;
+    }
+}
