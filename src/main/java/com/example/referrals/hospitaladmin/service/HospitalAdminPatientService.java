@@ -115,3 +115,70 @@ public class HospitalAdminPatientService {
     private void applyForUpdate(PatientForm form, Patient patient) {
         applyCommonFields(form, patient);
     }
+
+    private void applyCommonFields(PatientForm form, Patient patient) {
+        patient.setFirstName(form.getFirstName().trim());
+        patient.setLastName(form.getLastName().trim());
+        patient.setGender(form.getGender());
+        patient.setDateOfBirth(form.getDateOfBirth());
+        patient.setPhoneNumber(normalizeNullable(form.getPhoneNumber()));
+        patient.setNationalId(normalizeNullable(form.getNationalId()));
+    }
+
+    private String normalizeNullable(String value) {
+        if (!StringUtils.hasText(value)) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private Long requireTenantId() {
+        Long tenantId = TenantContext.getTenantId();
+        if (tenantId == null) {
+            throw new IllegalStateException("Tenant context not available");
+        }
+        return tenantId;
+    }
+
+    private boolean matchesPatient(Patient patient, String query) {
+        return contains(patient.getPatientNumber(), query)
+            || contains(patient.getFirstName(), query)
+            || contains(patient.getLastName(), query)
+            || contains(patient.getFullName(), query)
+            || contains(patient.getPhoneNumber(), query)
+            || contains(patient.getNationalId(), query);
+    }
+
+    private boolean contains(String value, String query) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+    }
+
+    private String normalizeQuery(String query) {
+        if (!StringUtils.hasText(query)) {
+            return null;
+        }
+        return query.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private String generatePatientNumber(Hospital hospital) {
+        String hospitalCode = sanitizeHospitalCode(hospital.getCode());
+        for (int attempt = 0; attempt < 20; attempt++) {
+            String candidate = "PAT-" + hospitalCode + "-"
+                + LocalDateTime.now().format(PATIENT_NUMBER_TIMESTAMP)
+                + "-"
+                + ThreadLocalRandom.current().nextInt(100, 1000);
+            if (!patientRepository.existsByPatientNumberIgnoreCaseAndHospitalId(candidate, hospital.getId())) {
+                return candidate;
+            }
+        }
+        throw new IllegalStateException("Unable to generate a unique patient number right now. Please try again.");
+    }
+
+    private String sanitizeHospitalCode(String hospitalCode) {
+        String normalized = hospitalCode == null ? "HOSPITAL" : hospitalCode.replaceAll("[^A-Za-z0-9]", "").toUpperCase(Locale.ROOT);
+        if (!StringUtils.hasText(normalized)) {
+            normalized = "HOSPITAL";
+        }
+        return normalized.length() > 8 ? normalized.substring(0, 8) : normalized;
+    }
+}
