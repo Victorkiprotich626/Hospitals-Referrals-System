@@ -83,3 +83,131 @@ public class HospitalAdminStaffService {
         }
         return form;
     }
+
+    public void create(HospitalUserForm form) {
+        Long tenantId = requireTenantId();
+        validateForm(form, tenantId, null, true);
+
+        Hospital hospital = hospitalRepository.findById(tenantId)
+            .orElseThrow(() -> new EntityNotFoundException("Hospital not found"));
+
+        AppUser user = new AppUser();
+        user.setHospital(hospital);
+        apply(form, user, tenantId, true);
+        userRepository.save(user);
+    }
+
+    public void update(Long userId, HospitalUserForm form) {
+        Long tenantId = requireTenantId();
+        validateForm(form, tenantId, userId, false);
+
+        AppUser user = userRepository.findById(userId)
+            .filter(existing -> existing.getHospital() != null && existing.getHospital().getId().equals(tenantId))
+            .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        apply(form, user, tenantId, false);
+    }
+
+    public void delete(Long userId) {
+        AppUser user = userRepository.findById(userId)
+            .filter(existing -> existing.getHospital() != null && existing.getHospital().getId().equals(requireTenantId()))
+            .orElseThrow(() -> new EntityNotFoundException("User not found"));
+        userRepository.delete(user);
+    }
+
+    private void validateForm(HospitalUserForm form, Long tenantId, Long userId, boolean creating) {
+        if (!MANAGED_ROLES.contains(form.getRole())) {
+            throw new IllegalArgumentException("This role cannot be managed from the hospital workspace.");
+        }
+
+        boolean duplicateEmail = userId == null
+            ? userRepository.existsByEmailIgnoreCase(form.getEmail().trim())
+            : userRepository.existsByEmailIgnoreCaseAndIdNot(form.getEmail().trim(), userId);
+        if (duplicateEmail) {
+            throw new IllegalArgumentException("Email address already exists.");
+        }
+
+        if (creating && !StringUtils.hasText(form.getPassword())) {
+            throw new IllegalArgumentException("A password is required when creating a user.");
+        }
+
+        Department department = resolveDepartment(form.getDepartmentId(), tenantId);
+        Doctor doctor = resolveDoctor(form.getDoctorProfileId(), tenantId);
+
+        if (form.getRole() == RoleName.DOCTOR && doctor == null) {
+            throw new IllegalArgumentException("Doctor users must be linked to a doctor profile.");
+        }
+
+        if (doctor != null && doctor.getDepartment() != null && department != null
+            && !doctor.getDepartment().getId().equals(department.getId())) {
+            throw new IllegalArgumentException("Selected doctor does not belong to the chosen department.");
+        }
+    }
+
+    private void apply(HospitalUserForm form, AppUser user, Long tenantId, boolean creating) {
+        Department department = resolveDepartment(form.getDepartmentId(), tenantId);
+        Doctor doctor = resolveDoctor(form.getDoctorProfileId(), tenantId);
+
+        user.setFirstName(form.getFirstName().trim());
+        user.setLastName(form.getLastName().trim());
+        user.setEmail(form.getEmail().trim().toLowerCase());
+        user.setEnabled(form.isEnabled());
+        user.setRoles(Set.of(form.getRole()));
+
+        if (doctor != null && doctor.getDepartment() != null && department == null) {
+            department = doctor.getDepartment();
+        }
+        user.setDepartment(department);
+        user.setDoctorProfile(form.getRole() == RoleName.DOCTOR ? doctor : null);
+
+        if (creating || StringUtils.hasText(form.getPassword())) {
+            user.setPasswordHash(passwordEncoder.encode(form.getPassword().trim()));
+        }
+    }
+
+    private Department resolveDepartment(Long departmentId, Long tenantId) {
+        if (departmentId == null) {
+            return null;
+        }
+        return departmentRepository.findByIdAndHospitalId(departmentId, tenantId)
+            .filter(Department::isEnabled)
+            .orElseThrow(() -> new IllegalArgumentException("Selected department is invalid or disabled."));
+    }
+
+    private Doctor resolveDoctor(Long doctorId, Long tenantId) {
+        if (doctorId == null) {
+            return null;
+        }
+        return doctorRepository.findByIdAndHospitalId(doctorId, tenantId)
+            .filter(Doctor::isEnabled)
+            .orElseThrow(() -> new IllegalArgumentException("Selected doctor is invalid or disabled."));
+    }
+
+    private Long requireTenantId() {
+        Long tenantId = TenantContext.getTenantId();
+        if (tenantId == null) {
+            throw new IllegalStateException("Tenant context not available");
+        }
+        return tenantId;
+    }
+
+    private boolean matchesUser(AppUser user, String query) {
+        return contains(user.getFirstName(), query)
+            || contains(user.getLastName(), query)
+            || contains(user.getFullName(), query)
+            || contains(user.getEmail(), query)
+            || (user.getPrimaryRole() != null && contains(user.getPrimaryRole().name(), query))
+            || (user.getDepartment() != null && contains(user.getDepartment().getName(), query))
+            || (user.getDoctorProfile() != null && contains(user.getDoctorProfile().getFullName(), query));
+    }
+
+    private boolean contains(String value, String query) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+    }
+
+    private String normalizeQuery(String query) {
+        if (!StringUtils.hasText(query)) {
+            return null;
+        }
+        return query.trim().toLowerCase(Locale.ROOT);
+    }
+}
