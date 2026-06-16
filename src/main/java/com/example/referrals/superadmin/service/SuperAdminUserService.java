@@ -76,3 +76,68 @@ public class SuperAdminUserService {
         user.setRoles(Set.of(RoleName.HOSPITAL_ADMIN));
         userRepository.save(user);
     }
+
+    public void updateHospitalAdmin(Long userId, HospitalAdminForm form) {
+        validateUser(form, userId, false);
+        AppUser user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("Hospital admin not found"));
+        apply(form, user, false);
+    }
+
+    public void deleteHospitalAdmin(Long userId) {
+        AppUser user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundException("Hospital admin not found"));
+        userRepository.delete(user);
+    }
+
+    public long countEnabledAdminsForHospital(Long hospitalId) {
+        return userRepository.countByHospitalIdAndEnabledTrue(hospitalId);
+    }
+
+    private void validateUser(HospitalAdminForm form, Long existingId, boolean creating) {
+        boolean duplicateEmail = existingId == null
+            ? userRepository.existsByEmailIgnoreCase(form.getEmail().trim())
+            : userRepository.existsByEmailIgnoreCaseAndIdNot(form.getEmail().trim(), existingId);
+        if (duplicateEmail) {
+            throw new IllegalArgumentException("Email address already exists.");
+        }
+        if (creating && !StringUtils.hasText(form.getPassword())) {
+            throw new IllegalArgumentException("A password is required when creating a hospital admin.");
+        }
+        hospitalRepository.findById(form.getHospitalId())
+            .orElseThrow(() -> new IllegalArgumentException("Selected hospital does not exist."));
+    }
+
+    private void apply(HospitalAdminForm form, AppUser user, boolean creating) {
+        Hospital hospital = hospitalRepository.findById(form.getHospitalId())
+            .orElseThrow(() -> new EntityNotFoundException("Hospital not found"));
+        user.setFirstName(form.getFirstName().trim());
+        user.setLastName(form.getLastName().trim());
+        user.setEmail(form.getEmail().trim().toLowerCase());
+        user.setHospital(hospital);
+        user.setEnabled(form.isEnabled());
+        if (creating || StringUtils.hasText(form.getPassword())) {
+            user.setPasswordHash(passwordEncoder.encode(form.getPassword().trim()));
+        }
+    }
+
+    private boolean matchesAdmin(AppUser admin, String query) {
+        return contains(admin.getFirstName(), query)
+            || contains(admin.getLastName(), query)
+            || contains(admin.getFullName(), query)
+            || contains(admin.getEmail(), query)
+            || (admin.getHospital() != null
+                && (contains(admin.getHospital().getName(), query) || contains(admin.getHospital().getCode(), query)));
+    }
+
+    private boolean contains(String value, String query) {
+        return value != null && value.toLowerCase(Locale.ROOT).contains(query);
+    }
+
+    private String normalizeQuery(String query) {
+        if (!StringUtils.hasText(query)) {
+            return null;
+        }
+        return query.trim().toLowerCase(Locale.ROOT);
+    }
+}
