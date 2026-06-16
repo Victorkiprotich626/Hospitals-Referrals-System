@@ -63,3 +63,42 @@ public class HospitalAdminDepartmentController {
             "/hospital-admin/departments/" + departmentId);
         return "hospitaladmin/departments/form";
     }
+
+    @PostMapping("/{departmentId}")
+    public String update(@PathVariable Long departmentId,
+                         @Valid @ModelAttribute("departmentForm") DepartmentForm departmentForm,
+                         BindingResult bindingResult,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            populateForm(model, departmentForm, "Edit Department", "/hospital-admin/departments/" + departmentId);
+            return "hospitaladmin/departments/form";
+        }
+        try {
+            directoryService.updateDepartment(departmentId, departmentForm);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("department", ex.getMessage());
+            populateForm(model, departmentForm, "Edit Department", "/hospital-admin/departments/" + departmentId);
+            return "hospitaladmin/departments/form";
+        }
+        redirectAttributes.addFlashAttribute("message", "Department updated successfully.");
+        return "redirect:/hospital-admin/departments";
+    }
+
+    @PostMapping("/{departmentId}/delete")
+    public String delete(@PathVariable Long departmentId, RedirectAttributes redirectAttributes) {
+        try {
+            directoryService.deleteDepartment(departmentId);
+            redirectAttributes.addFlashAttribute("message", "Department deleted successfully.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/hospital-admin/departments";
+    }
+
+    private void populateForm(Model model, DepartmentForm form, String title, String action) {
+        model.addAttribute("departmentForm", form);
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("formAction", action);
+    }
+}
