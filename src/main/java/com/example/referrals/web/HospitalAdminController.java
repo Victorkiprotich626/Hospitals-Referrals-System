@@ -58,3 +58,47 @@ public class HospitalAdminController {
         redirectAttributes.addFlashAttribute("message", "Hospital admin created successfully.");
         return "redirect:/super-admin/admins";
     }
+
+    @GetMapping("/{userId}/edit")
+    public String editForm(@PathVariable Long userId, Model model) {
+        populateForm(model, userService.buildForm(userId), "Edit Hospital Admin", "/super-admin/admins/" + userId);
+        return "superadmin/admins/form";
+    }
+
+    @PostMapping("/{userId}")
+    public String update(@PathVariable Long userId,
+                         @Valid @ModelAttribute("hospitalAdminForm") HospitalAdminForm hospitalAdminForm,
+                         BindingResult bindingResult,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            populateForm(model, hospitalAdminForm, "Edit Hospital Admin", "/super-admin/admins/" + userId);
+            return "superadmin/admins/form";
+        }
+
+        try {
+            userService.updateHospitalAdmin(userId, hospitalAdminForm);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("admin", ex.getMessage());
+            populateForm(model, hospitalAdminForm, "Edit Hospital Admin", "/super-admin/admins/" + userId);
+            return "superadmin/admins/form";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Hospital admin updated successfully.");
+        return "redirect:/super-admin/admins";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String delete(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        userService.deleteHospitalAdmin(userId);
+        redirectAttributes.addFlashAttribute("message", "Hospital admin deleted successfully.");
+        return "redirect:/super-admin/admins";
+    }
+
+    private void populateForm(Model model, HospitalAdminForm form, String title, String action) {
+        model.addAttribute("hospitalAdminForm", form);
+        model.addAttribute("hospitals", userService.findHospitalsForSelection());
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("formAction", action);
+    }
+}
