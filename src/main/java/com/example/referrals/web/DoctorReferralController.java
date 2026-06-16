@@ -68,3 +68,53 @@ public class DoctorReferralController {
         }
         return "redirect:/doctor/referrals/" + referralId;
     }
+
+    @PostMapping("/{referralId}/notes")
+    public String addNote(@PathVariable Long referralId,
+                          @Valid @ModelAttribute("noteForm") ReferralNoteForm noteForm,
+                          BindingResult bindingResult,
+                          Model model,
+                          RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            Referral referral = referralService.findAssignedReferralForCurrentDoctor(referralId);
+            populateDetailModel(model, referral, referralId, null, null);
+            return "doctor/referrals/detail";
+        }
+        referralService.addDoctorNote(referralId, noteForm);
+        redirectAttributes.addFlashAttribute("message", "Clinical note added successfully.");
+        return "redirect:/doctor/referrals/" + referralId;
+    }
+
+    private void populateDetailModel(Model model,
+                                     Referral referral,
+                                     Long referralId,
+                                     String timelineScope,
+                                     ReferralEventType eventType) {
+        String resolvedScope = StringUtils.hasText(timelineScope) ? timelineScope.trim().toLowerCase() : "referral";
+        boolean journeyScope = "journey".equals(resolvedScope);
+        model.addAttribute("referral", referral);
+        model.addAttribute("timeline", journeyScope
+            ? referralService.findJourneyTimelineForCurrentTenant(referralId, eventType)
+            : referralService.findTimeline(referralId, eventType));
+        model.addAttribute("timelineScope", journeyScope ? "journey" : "referral");
+        model.addAttribute("selectedTimelineEventType", eventType != null ? eventType.name() : "");
+        model.addAttribute("timelineEventTypes", ReferralEventType.values());
+        model.addAttribute("attachments", attachmentService.findVisibleAttachments(referralId));
+        model.addAttribute("attachmentForm", new ReferralAttachmentForm());
+        model.addAttribute("attachmentTypes", com.example.referrals.referral.ReferralAttachmentType.values());
+        model.addAttribute("canManageAttachments", attachmentService.canManageAttachments());
+        model.addAttribute("journeyReferrals", referralService.findJourneyForCurrentTenant(referral.getJourneyCode()));
+        model.addAttribute("noteForm", new ReferralNoteForm());
+    }
+
+    private ReferralEventType parseEventType(String eventType) {
+        if (!StringUtils.hasText(eventType)) {
+            return null;
+        }
+        try {
+            return ReferralEventType.valueOf(eventType.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+}
