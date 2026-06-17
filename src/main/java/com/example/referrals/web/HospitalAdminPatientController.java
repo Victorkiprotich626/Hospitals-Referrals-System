@@ -66,3 +66,45 @@ public class HospitalAdminPatientController {
             "/hospital-admin/patients/" + patientId);
         return "hospitaladmin/patients/form";
     }
+
+    @PostMapping("/{patientId}")
+    public String update(@PathVariable Long patientId,
+                         @Valid @ModelAttribute("patientForm") PatientForm patientForm,
+                         BindingResult bindingResult,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            populateForm(model, patientForm, "Edit Patient", "/hospital-admin/patients/" + patientId);
+            return "hospitaladmin/patients/form";
+        }
+
+        try {
+            patientService.update(patientId, patientForm);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("patient", ex.getMessage());
+            populateForm(model, patientForm, "Edit Patient", "/hospital-admin/patients/" + patientId);
+            return "hospitaladmin/patients/form";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "Patient updated successfully.");
+        return "redirect:/hospital-admin/patients";
+    }
+
+    @PostMapping("/{patientId}/delete")
+    public String delete(@PathVariable Long patientId, RedirectAttributes redirectAttributes) {
+        try {
+            patientService.delete(patientId);
+            redirectAttributes.addFlashAttribute("message", "Patient deleted successfully.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/hospital-admin/patients";
+    }
+
+    private void populateForm(Model model, PatientForm form, String title, String action) {
+        model.addAttribute("patientForm", form);
+        model.addAttribute("genders", Gender.values());
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("formAction", action);
+    }
+}
