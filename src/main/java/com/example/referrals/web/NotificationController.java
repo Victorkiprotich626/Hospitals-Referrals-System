@@ -45,3 +45,34 @@ public class NotificationController {
         notificationService.markAllCurrentUserNotificationsRead();
         return "redirect:/notifications";
     }
+
+    private void populateWorkspaceNavigation(Model model) {
+        if (currentUserFacade.hasRole(RoleName.HOSPITAL_ADMIN)) {
+            model.addAttribute("workspaceRole", "HOSPITAL_ADMIN");
+            model.addAttribute("workspaceHome", "/hospital-admin");
+            model.addAttribute("workspaceLabel", "Hospital admin dashboard");
+            return;
+        }
+        if (currentUserFacade.hasRole(RoleName.REFERRAL_OFFICER)) {
+            model.addAttribute("workspaceRole", "REFERRAL_OFFICER");
+            model.addAttribute("workspaceHome", "/referral-officer");
+            model.addAttribute("workspaceLabel", "Referral officer dashboard");
+            return;
+        }
+        if (currentUserFacade.hasRole(RoleName.DOCTOR)) {
+            model.addAttribute("workspaceRole", "DOCTOR");
+            model.addAttribute("workspaceHome", "/doctor");
+            model.addAttribute("workspaceLabel", "Doctor dashboard");
+            return;
+        }
+        if (currentUserFacade.hasRole(RoleName.VIEWER)) {
+            model.addAttribute("workspaceRole", "VIEWER");
+            model.addAttribute("workspaceHome", "/viewer");
+            model.addAttribute("workspaceLabel", "Viewer dashboard");
+            return;
+        }
+        model.addAttribute("workspaceRole", "SUPER_ADMIN");
+        model.addAttribute("workspaceHome", "/super-admin");
+        model.addAttribute("workspaceLabel", "Super admin dashboard");
+    }
+}
