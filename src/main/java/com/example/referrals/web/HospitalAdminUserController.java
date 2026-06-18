@@ -41,3 +41,73 @@ public class HospitalAdminUserController {
         model.addAttribute("selectedRole", role);
         return "hospitaladmin/users/list";
     }
+
+    @GetMapping("/new")
+    public String createForm(Model model) {
+        populateForm(model, new HospitalUserForm(), "Add User", "/hospital-admin/users");
+        return "hospitaladmin/users/form";
+    }
+
+    @PostMapping
+    public String create(@Valid @ModelAttribute("hospitalUserForm") HospitalUserForm hospitalUserForm,
+                         BindingResult bindingResult,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            populateForm(model, hospitalUserForm, "Add User", "/hospital-admin/users");
+            return "hospitaladmin/users/form";
+        }
+        try {
+            staffService.create(hospitalUserForm);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("user", ex.getMessage());
+            populateForm(model, hospitalUserForm, "Add User", "/hospital-admin/users");
+            return "hospitaladmin/users/form";
+        }
+        redirectAttributes.addFlashAttribute("message", "Hospital user created successfully.");
+        return "redirect:/hospital-admin/users";
+    }
+
+    @GetMapping("/{userId}/edit")
+    public String editForm(@PathVariable Long userId, Model model) {
+        populateForm(model, staffService.buildForm(userId), "Edit User", "/hospital-admin/users/" + userId);
+        return "hospitaladmin/users/form";
+    }
+
+    @PostMapping("/{userId}")
+    public String update(@PathVariable Long userId,
+                         @Valid @ModelAttribute("hospitalUserForm") HospitalUserForm hospitalUserForm,
+                         BindingResult bindingResult,
+                         Model model,
+                         RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            populateForm(model, hospitalUserForm, "Edit User", "/hospital-admin/users/" + userId);
+            return "hospitaladmin/users/form";
+        }
+        try {
+            staffService.update(userId, hospitalUserForm);
+        } catch (IllegalArgumentException ex) {
+            bindingResult.reject("user", ex.getMessage());
+            populateForm(model, hospitalUserForm, "Edit User", "/hospital-admin/users/" + userId);
+            return "hospitaladmin/users/form";
+        }
+        redirectAttributes.addFlashAttribute("message", "Hospital user updated successfully.");
+        return "redirect:/hospital-admin/users";
+    }
+
+    @PostMapping("/{userId}/delete")
+    public String delete(@PathVariable Long userId, RedirectAttributes redirectAttributes) {
+        staffService.delete(userId);
+        redirectAttributes.addFlashAttribute("message", "Hospital user deleted successfully.");
+        return "redirect:/hospital-admin/users";
+    }
+
+    private void populateForm(Model model, HospitalUserForm form, String title, String action) {
+        model.addAttribute("hospitalUserForm", form);
+        model.addAttribute("roles", List.of(RoleName.REFERRAL_OFFICER, RoleName.DOCTOR, RoleName.VIEWER));
+        model.addAttribute("departments", directoryService.findEnabledDepartmentsForCurrentTenant());
+        model.addAttribute("doctors", directoryService.findEnabledDoctorsForCurrentTenant());
+        model.addAttribute("pageTitle", title);
+        model.addAttribute("formAction", action);
+    }
+}
