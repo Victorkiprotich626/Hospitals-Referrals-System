@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Doctor Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: doctorNavbar('dashboard')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Doctor</span>
+            <h1 th:text="'Welcome, ' + ${fullName}">Welcome</h1>
+            <p>Your workspace is limited to referrals that have been assigned directly to you.</p>
+        </div>
+    </section>
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Open assigned referrals</span>
+            <strong th:text="${assignedOpenCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Total assigned referrals</span>
+            <strong th:text="${#lists.size(referrals)}">0</strong>
+        </article>
+    </section>
+    <section class="card action-grid">
+        <a class="action-card" th:href="@{/doctor/referrals}">
+            <h2>Assigned referrals</h2>
+            <p>Review your referrals and add clinical notes to the shared timeline.</p>
+        </a>
+    </section>
+</main>
+</body>
+</html>
