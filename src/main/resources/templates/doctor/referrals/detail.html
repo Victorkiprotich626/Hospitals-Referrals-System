@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Assigned Referral Detail')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: doctorNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Doctor</span>
+            <h1 th:text="${referral.referenceNumber}">REF-001</h1>
+            <p th:text="${referral.subject}">Referral subject</p>
+        </div>
+        <a class="secondary-button" th:href="@{/doctor/referrals}">Back to assigned referrals</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+    <section class="urgency-banner" th:if="${referral.urgentCase and !referral.closed}">
+        <strong th:text="${referral.priority.displayName + ' priority referral'}">Urgent priority referral</strong>
+        <span th:text="${referral.slaDetailLabel ?: referral.waitingLabel}">Due in 1 day</span>
+    </section>
+
+    <section class="detail-grid">
+        <article class="card detail-card">
+            <h2>Overview</h2>
+            <dl class="detail-list">
+                <div><dt>Patient</dt><dd th:text="${referral.patient.fullName + ' (' + referral.patient.patientNumber + ')'}">Patient</dd></div>
+                <div><dt>Status</dt><dd><span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}" th:text="${referral.status.displayName}">Submitted</span></dd></div>
+                <div><dt>Priority</dt><dd><span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}" th:text="${referral.priority.displayName}">High</span></dd></div>
+                <div>
+                    <dt>SLA</dt>
+                    <dd>
+                        <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClass}" th:text="${referral.slaBadgeLabel}">On track</span>
+                        <small th:text="${referral.slaDetailLabel ?: referral.waitingLabel}">Due in 1 day</small>
+                    </dd>
+                </div>
+                <div><dt>From hospital</dt><dd th:text="${referral.fromHospital.name}">Origin</dd></div>
+                <div><dt>Journey code</dt><dd th:text="${referral.journeyCode}">JRNY-001</dd></div>
+                <div><dt>Assigned department</dt><dd th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'Not assigned'}">Department</dd></div>
+                <div><dt>Assigned doctor</dt><dd th:text="${referral.assignedDoctor != null ? referral.assignedDoctor.fullName : 'Not assigned'}">Doctor</dd></div>
+                <div><dt>Reason</dt><dd th:text="${referral.referralReason}">Reason</dd></div>
+                <div><dt>Clinical summary</dt><dd th:text="${referral.clinicalSummary ?: 'No clinical summary provided'}">Summary</dd></div>
+                <div><dt>Final outcome</dt><dd th:text="${referral.closureOutcome != null ? referral.closureOutcome.displayName : 'Not closed yet'}">Admitted</dd></div>
+                <div th:if="${referral.closureSummary != null}"><dt>Outcome summary</dt><dd th:text="${referral.closureSummary}">Patient admitted for observation.</dd></div>
+            </dl>
+        </article>
+
+        <article class="card detail-card">
+            <h2>Add clinical note</h2>
+            <form th:action="@{|/doctor/referrals/${referral.id}/notes|}" th:object="${noteForm}" method="post" class="stacked-form">
+                <label>
+                    Note
+                    <textarea th:field="*{note}" rows="5" placeholder="Add your clinical observations or comments"></textarea>
+                    <small class="field-error" th:errors="*{note}"></small>
+                </label>
+                <button type="submit" class="primary-button">Save note</button>
+            </form>
+        </article>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Attachments</h2>
+            <p>Upload supporting files or download documents already shared on this referral.</p>
+        </div>
+        <form th:action="@{|/doctor/referrals/${referral.id}/attachments|}" th:object="${attachmentForm}" method="post" enctype="multipart/form-data" class="stacked-form attachment-upload-form">
+            <label>
+                Upload file
+                <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+            </label>
+            <label>
+                Document type
+                <select th:field="*{attachmentType}">
+                    <option th:each="attachmentType : ${attachmentTypes}" th:value="${attachmentType}" th:text="${attachmentType.displayName}"></option>
+                </select>
+            </label>
+            <label class="attachment-note-field">
+                Note
+                <textarea th:field="*{note}" rows="3" placeholder="Optional note about this document"></textarea>
+            </label>
+            <button type="submit" class="secondary-button">Upload attachment</button>
+            <small class="helper-text">Allowed formats: PDF, JPG, PNG, DOC, DOCX. Maximum size: 10 MB.</small>
+        </form>
+        <div class="attachment-list">
+            <article class="attachment-item" th:each="attachment : ${attachments}">
+                <div class="attachment-main">
+                    <div class="attachment-title-row">
+                        <strong th:text="${attachment.originalFileName}">document.pdf</strong>
+                        <span class="status-pill status-neutral" th:text="${attachment.attachmentType.displayName}">Lab Result</span>
+                    </div>
+                    <p th:if="${attachment.hasNote()}" class="attachment-note" th:text="${attachment.note}">Attachment note</p>
+                    <small th:text="${attachment.uploadedByName + (attachment.uploadedByRoleName != null ? ' (' + attachment.uploadedByRoleName + ')' : '') + ' • ' + #temporals.format(attachment.createdAt, 'yyyy-MM-dd HH:mm') + ' • ' + attachment.displaySize}">Uploader</small>
+                </div>
+                <div class="attachment-actions">
+                    <a class="secondary-button" th:if="${attachment.previewableInline}" th:href="@{|/attachments/${attachment.id}/view|}" target="_blank" rel="noopener noreferrer">View</a>
+                    <a class="secondary-button" th:href="@{|/attachments/${attachment.id}/download|}">Download</a>
+                </div>
+            </article>
+            <p th:if="${#lists.isEmpty(attachments)}" class="empty-state">No attachments uploaded yet.</p>
+        </div>
+    </section>
