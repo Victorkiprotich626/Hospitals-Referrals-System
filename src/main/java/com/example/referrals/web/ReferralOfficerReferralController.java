@@ -152,3 +152,128 @@ public class ReferralOfficerReferralController {
         if (bindingResult.hasErrors()) {
             Referral referral = referralService.findVisibleById(referralId);
             populateDetailModel(model, referral, referralId, null, null);
+            model.addAttribute("noteForm", new ReferralNoteForm());
+            return "referralofficer/referrals/detail";
+        }
+        try {
+            referralService.updateStatus(referralId, statusForm);
+            redirectAttributes.addFlashAttribute("message", "Referral status updated successfully.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/referral-officer/referrals/" + referralId;
+    }
+
+    @PostMapping("/{referralId}/notes")
+    public String addNote(@PathVariable Long referralId,
+                          @Valid @ModelAttribute("noteForm") ReferralNoteForm noteForm,
+                          BindingResult bindingResult,
+                          Model model,
+                          RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            Referral referral = referralService.findVisibleById(referralId);
+            populateDetailModel(model, referral, referralId, null, null);
+            model.addAttribute("statusForm", new ReferralStatusForm());
+            return "referralofficer/referrals/detail";
+        }
+        referralService.addNote(referralId, noteForm);
+        redirectAttributes.addFlashAttribute("message", "Timeline note added successfully.");
+        return "redirect:/referral-officer/referrals/" + referralId;
+    }
+
+    @PostMapping("/{referralId}/closure")
+    public String updateClosureOutcome(@PathVariable Long referralId,
+                                       @Valid @ModelAttribute("closureForm") ReferralClosureForm closureForm,
+                                       BindingResult bindingResult,
+                                       Model model,
+                                       RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            Referral referral = referralService.findVisibleById(referralId);
+            populateDetailModel(model, referral, referralId, null, null);
+            model.addAttribute("statusForm", new ReferralStatusForm());
+            model.addAttribute("closureForm", closureForm);
+            return "referralofficer/referrals/detail";
+        }
+        try {
+            referralService.updateClosureOutcome(referralId, closureForm);
+            redirectAttributes.addFlashAttribute("message", "Final outcome updated successfully.");
+        } catch (IllegalArgumentException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+        }
+        return "redirect:/referral-officer/referrals/" + referralId;
+    }
+
+    private void populateCreateForm(Model model, ReferralForm form) {
+        model.addAttribute("referralForm", form);
+        model.addAttribute("patients", referralService.findPatientsForCurrentTenant());
+        model.addAttribute("hospitals", referralService.findReferralDestinations());
+        model.addAttribute("priorities", ReferralPriority.values());
+        model.addAttribute("pageTitle", "Create Referral");
+        model.addAttribute("formSubtitle", "Submit a new referral from your hospital to another hospital in the platform.");
+        model.addAttribute("sourceReferral", null);
+        model.addAttribute("formAction", "/referral-officer/referrals");
+        model.addAttribute("submitLabel", "Submit referral");
+    }
+
+    private void populateForwardForm(Model model, ReferralForm form, Referral sourceReferral) {
+        model.addAttribute("referralForm", form);
+        model.addAttribute("patients", referralService.findPatientsForCurrentTenant());
+        model.addAttribute("hospitals", referralService.findReferralDestinations());
+        model.addAttribute("priorities", ReferralPriority.values());
+        model.addAttribute("pageTitle", "Forward Referral");
+        model.addAttribute("formSubtitle", "Create the next referral in this patient's journey while preserving cross-hospital tracking.");
+        model.addAttribute("sourceReferral", sourceReferral);
+        model.addAttribute("formAction", "/referral-officer/referrals");
+        model.addAttribute("submitLabel", "Forward referral");
+    }
+
+    private void repopulateForm(Model model, ReferralForm form) {
+        if (form.getSourceReferralId() == null) {
+            populateCreateForm(model, form);
+            return;
+        }
+        populateForwardForm(model, form, referralService.findVisibleById(form.getSourceReferralId()));
+    }
+
+    private void populateDetailModel(Model model,
+                                     Referral referral,
+                                     Long referralId,
+                                     String timelineScope,
+                                     ReferralEventType eventType) {
+        String resolvedScope = StringUtils.hasText(timelineScope) ? timelineScope.trim().toLowerCase() : "referral";
+        boolean journeyScope = "journey".equals(resolvedScope);
+        model.addAttribute("referral", referral);
+        model.addAttribute("timeline", journeyScope
+            ? referralService.findJourneyTimelineForCurrentTenant(referralId, eventType)
+            : referralService.findTimeline(referralId, eventType));
+        model.addAttribute("timelineScope", journeyScope ? "journey" : "referral");
+        model.addAttribute("selectedTimelineEventType", eventType != null ? eventType.name() : "");
+        model.addAttribute("timelineEventTypes", ReferralEventType.values());
+        model.addAttribute("allowedStatuses", referralService.allowedTransitions(referral));
+        model.addAttribute("departments", referralService.findEnabledDepartmentsForCurrentTenant());
+        model.addAttribute("doctors", referralService.findEnabledDoctorsForCurrentTenant());
+        model.addAttribute("attachments", attachmentService.findVisibleAttachments(referralId));
+        model.addAttribute("attachmentForm", new ReferralAttachmentForm());
+        model.addAttribute("attachmentTypes", com.example.referrals.referral.ReferralAttachmentType.values());
+        model.addAttribute("canManageAttachments", attachmentService.canManageAttachments());
+        model.addAttribute("journeyReferrals", referralService.findJourneyForCurrentTenant(referral.getJourneyCode()));
+        model.addAttribute("canForward", referralService.canForward(referral));
+        model.addAttribute("assignmentForm", new ReferralAssignmentForm());
+        model.addAttribute("statusForm", new ReferralStatusForm());
+        model.addAttribute("closureForm", referralService.buildClosureForm(referral));
+        model.addAttribute("closureOutcomes", ReferralClosureOutcome.values());
+        model.addAttribute("noteForm", new ReferralNoteForm());
+        model.addAttribute("currentHospitalId", TenantContext.getTenantId());
+    }
+
+    private ReferralEventType parseEventType(String eventType) {
+        if (!StringUtils.hasText(eventType)) {
+            return null;
+        }
+        try {
+            return ReferralEventType.valueOf(eventType.trim().toUpperCase());
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
+    }
+}
