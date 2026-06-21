@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hospital Admin Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('dashboard')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Hospital Admin</span>
+            <h1 th:text="'Welcome, ' + ${fullName}">Welcome</h1>
+            <p>This tenant dashboard is ready for the next increment, where we will add departments, users, patients, and referral workflows.</p>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Tenant ID</span>
+            <strong th:text="${tenantId}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Active admins in tenant</span>
+            <strong th:text="${activeAdmins}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Departments</span>
+            <strong th:text="${departmentCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Doctors</span>
