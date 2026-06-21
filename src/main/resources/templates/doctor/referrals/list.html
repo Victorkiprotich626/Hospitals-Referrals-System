@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Assigned Referrals')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: doctorNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Doctor</span>
+            <h1>Assigned referrals</h1>
+            <p>Only referrals routed directly to your doctor profile are shown here.</p>
+        </div>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/doctor/referrals}" class="stacked-form">
+            <label>
+                Search assigned referrals
+                <input type="text" name="q" th:value="${q}" placeholder="Search by reference, patient, hospital, department, or journey">
+            </label>
+            <label>
+                Filter by status
+                <select name="status">
+                    <option value="">All statuses</option>
+                    <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption.displayName}"
+                            th:selected="${selectedStatus == statusOption}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/doctor/referrals}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Patient</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>SLA</th>
+                <th>From hospital</th>
+                <th>Department</th>
+                <th>Updated</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(referrals)}">
+                <td colspan="8" class="empty-state">No referrals are assigned to you yet.</td>
+            </tr>
+            <tr th:each="referral : ${referrals}">
+                <td><a th:href="@{|/doctor/referrals/${referral.id}|}" th:text="${referral.referenceNumber}">REF-001</a></td>
+                <td>
+                    <div th:text="${referral.patient.fullName}">Patient Name</div>
+                    <small th:text="${referral.patient.patientNumber}">PAT-001</small>
+                </td>
+                <td>
+                    <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}"
+                          th:text="${referral.status.displayName}">Submitted</span>
+                    <small th:if="${referral.closureOutcome != null}" th:text="${referral.closureOutcome.displayName}">Admitted</small>
+                </td>
+                <td><span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}" th:text="${referral.priority.displayName}">High</span></td>
+                <td>
+                    <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClass}" th:text="${referral.slaBadgeLabel}">On track</span>
+                    <small th:text="${referral.isClosed() ? (referral.closureSummary ?: 'Final workflow recorded') : (referral.slaDetailLabel ?: referral.waitingLabel)}">Due in 1 day</small>
+                </td>
+                <td th:text="${referral.fromHospital.name}">Origin</td>
+                <td th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'Unassigned'}">Department</td>
+                <td th:text="${#temporals.format(referral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
