@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('departments')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Directory</span>
+            <h1 th:text="${pageTitle}">Department</h1>
+            <p>Create or update the departments used for internal referral routing.</p>
+        </div>
+    </section>
+
+    <form th:action="${formAction}" th:object="${departmentForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+        <label>
+            Department name
+            <input type="text" th:field="*{name}" placeholder="Cardiology">
+            <small class="field-error" th:errors="*{name}"></small>
+        </label>
+
+        <label>
+            Department code
+            <input type="text" th:field="*{code}" placeholder="CARD">
+            <small class="field-error" th:errors="*{code}"></small>
+        </label>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{enabled}">
+            <span>Department is active</span>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/hospital-admin/departments}">Cancel</a>
+            <button type="submit" class="primary-button">Save department</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
