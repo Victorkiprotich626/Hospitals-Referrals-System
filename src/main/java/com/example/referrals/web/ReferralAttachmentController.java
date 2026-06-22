@@ -34,3 +34,27 @@ public class ReferralAttachmentController {
         ReferralAttachmentService.DownloadedAttachment download = attachmentService.loadVisibleAttachment(attachmentId);
         return buildFileResponse(download, true);
     }
+
+    private ResponseEntity<Resource> buildFileResponse(ReferralAttachmentService.DownloadedAttachment download,
+                                                       boolean inline) {
+        MediaType mediaType = MediaType.APPLICATION_OCTET_STREAM;
+        String contentType = download.attachment().getContentType();
+        if (contentType != null && !contentType.isBlank()) {
+            try {
+                mediaType = MediaType.parseMediaType(contentType);
+            } catch (IllegalArgumentException ignored) {
+                mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+        }
+
+        ContentDisposition disposition = inline
+            ? ContentDisposition.inline().filename(download.attachment().getOriginalFileName(), StandardCharsets.UTF_8).build()
+            : ContentDisposition.attachment().filename(download.attachment().getOriginalFileName(), StandardCharsets.UTF_8).build();
+
+        return ResponseEntity.ok()
+            .contentType(mediaType)
+            .contentLength(download.attachment().getFileSize())
+            .header(HttpHeaders.CONTENT_DISPOSITION, disposition.toString())
+            .body(download.resource());
+    }
+}
