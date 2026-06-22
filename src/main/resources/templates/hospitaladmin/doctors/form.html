@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('doctors')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Directory</span>
+            <h1 th:text="${pageTitle}">Doctor</h1>
+            <p>Add clinicians who can receive internal referral assignments.</p>
+        </div>
+    </section>
+
+    <form th:action="${formAction}" th:object="${doctorForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+        <label>
+            First name
+            <input type="text" th:field="*{firstName}" placeholder="Amina">
+            <small class="field-error" th:errors="*{firstName}"></small>
+        </label>
+
+        <label>
+            Last name
+            <input type="text" th:field="*{lastName}" placeholder="Otieno">
+            <small class="field-error" th:errors="*{lastName}"></small>
+        </label>
+
+        <label>
+            Email
+            <input type="email" th:field="*{email}" placeholder="doctor@hospital.org">
+            <small class="field-error" th:errors="*{email}"></small>
+        </label>
+
+        <label>
+            Department
+            <select th:field="*{departmentId}">
+                <option value="">No department</option>
+                <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+            </select>
+        </label>
+
+        <label>
+            Phone number
+            <input type="text" th:field="*{phoneNumber}" placeholder="+254700000000">
+            <small class="field-error" th:errors="*{phoneNumber}"></small>
+        </label>
+
+        <label>
+            Specialty
+            <input type="text" th:field="*{specialty}" placeholder="Cardiology">
+            <small class="field-error" th:errors="*{specialty}"></small>
+        </label>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{enabled}">
+            <span>Doctor is active</span>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/hospital-admin/doctors}">Cancel</a>
+            <button type="submit" class="primary-button">Save doctor</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
