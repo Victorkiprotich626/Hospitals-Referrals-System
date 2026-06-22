@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Departments')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('departments')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Directory</span>
+            <h1>Departments</h1>
+            <p>Departments belong to your hospital and are used for internal routing of incoming referrals.</p>
+        </div>
+        <a class="primary-button" th:href="@{/hospital-admin/departments/new}">Add department</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/hospital-admin/departments}" class="stacked-form">
+            <label>
+                Search departments
+                <input type="text" name="q" th:value="${q}" placeholder="Search by department name or code">
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Search</button>
+                <a class="secondary-button" th:href="@{/hospital-admin/departments}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(departments)}">
