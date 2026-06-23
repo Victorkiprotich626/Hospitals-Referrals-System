@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Patients')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('patients')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Patients</span>
+            <h1>Patient registry</h1>
+            <p>Patients are tenant-owned and can be used when creating outgoing referrals.</p>
+        </div>
+        <a class="primary-button" th:href="@{/hospital-admin/patients/new}">Add patient</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/hospital-admin/patients}" class="stacked-form">
+            <label>
+                Search patients
+                <input type="text" name="q" th:value="${q}" placeholder="Search by patient number, name, phone, or national ID">
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Search</button>
+                <a class="secondary-button" th:href="@{/hospital-admin/patients}">Clear</a>
+            </div>
+        </form>
+    </section>
