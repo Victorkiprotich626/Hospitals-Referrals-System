@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Referral Detail')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referral</span>
+            <h1 th:text="${referral.referenceNumber}">REF-001</h1>
+            <p th:text="${referral.subject}">Referral subject</p>
+        </div>
+        <div class="header-actions">
+            <a class="secondary-button" th:href="@{/hospital-admin/referrals}">Back to referrals</a>
+            <a class="primary-button" th:if="${canForward}" th:href="@{|/hospital-admin/referrals/${referral.id}/forward|}">Forward onward</a>
+        </div>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+    <section class="urgency-banner" th:if="${referral.urgentCase and !referral.closed}">
+        <strong th:text="${referral.priority.displayName + ' priority referral'}">Urgent priority referral</strong>
+        <span th:text="${referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId)}">Due in 2 days</span>
+    </section>
+
+    <section class="detail-grid">
+        <article class="card detail-card">
+            <h2>Overview</h2>
+            <dl class="detail-list">
+                <div>
+                    <dt>Patient</dt>
+                    <dd th:text="${referral.patient.fullName + ' (' + referral.patient.patientNumber + ')'}">Patient</dd>
+                </div>
+                <div>
+                    <dt>Status</dt>
+                    <dd>
+                        <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}"
+                              th:text="${referral.status.displayName}">Submitted</span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>Priority</dt>
+                    <dd><span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}" th:text="${referral.priority.displayName}">Normal</span></dd>
+                </div>
+                <div>
+                    <dt>SLA</dt>
+                    <dd>
+                        <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClassFor(currentHospitalId)}" th:text="${referral.slaBadgeLabelFor(currentHospitalId)}">On track</span>
+                        <small th:text="${referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId)}">Due in 2 days</small>
+                    </dd>
+                </div>
+                <div>
+                    <dt>Waiting time</dt>
+                    <dd th:text="${referral.waitingLabelFor(currentHospitalId) ?: 'Closed'}">Waiting 2 days</dd>
+                </div>
+                <div>
+                    <dt>From hospital</dt>
+                    <dd th:text="${referral.fromHospital.name}">Origin</dd>
+                </div>
+                <div>
+                    <dt>To hospital</dt>
+                    <dd th:text="${referral.toHospital.name}">Destination</dd>
+                </div>
+                <div>
+                    <dt>Receiving department</dt>
+                    <dd th:text="${referral.receivingDepartment ?: 'Not specified'}">Department</dd>
+                </div>
+                <div>
+                    <dt>Assigned department</dt>
+                    <dd th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'Not assigned'}">Department</dd>
+                </div>
+                <div>
+                    <dt>Assigned doctor</dt>
+                    <dd th:text="${referral.assignedDoctor != null ? referral.assignedDoctor.fullName : 'Not assigned'}">Doctor</dd>
+                </div>
+                <div>
+                    <dt>Journey code</dt>
+                    <dd th:text="${referral.journeyCode}">JRNY-001</dd>
+                </div>
+                <div>
+                    <dt>Parent referral</dt>
+                    <dd>
+                        <a th:if="${referral.parentReferral != null}" th:href="@{|/hospital-admin/referrals/${referral.parentReferral.id}|}"
+                           th:text="${referral.parentReferral.referenceNumber}">REF-000</a>
+                        <span th:if="${referral.parentReferral == null}">Journey origin</span>
+                    </dd>
+                </div>
+                <div>
+                    <dt>Reason</dt>
+                    <dd th:text="${referral.referralReason}">Reason</dd>
+                </div>
+                <div>
+                    <dt>Clinical summary</dt>
+                    <dd th:text="${referral.clinicalSummary ?: 'No clinical summary provided'}">Summary</dd>
+                </div>
+                <div>
+                    <dt>Final outcome</dt>
+                    <dd th:text="${referral.closureOutcome != null ? referral.closureOutcome.displayName : 'Not closed yet'}">Admitted</dd>
+                </div>
+                <div th:if="${referral.closureSummary != null}">
+                    <dt>Outcome summary</dt>
+                    <dd th:text="${referral.closureSummary}">Patient admitted for observation.</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="card detail-card">
+            <h2>Actions</h2>
+            <form th:action="@{|/hospital-admin/referrals/${referral.id}/assign|}" th:object="${assignmentForm}" method="post" class="stacked-form">
+                <label>
+                    Route to department
+                    <select th:field="*{departmentId}">
+                        <option value="">No department</option>
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+                    </select>
+                </label>
+                <label>
+                    Assign doctor
+                    <select th:field="*{doctorId}">
+                        <option value="">No doctor</option>
+                        <option th:each="doctor : ${doctors}" th:value="${doctor.id}"
+                                th:text="${doctor.fullName + (doctor.department != null ? ' - ' + doctor.department.name : '')}"></option>
+                    </select>
+                </label>
+                <button type="submit" class="secondary-button">Route referral</button>
+                <small class="helper-text">Routing is only available to the receiving hospital while the referral is still open.</small>
+            </form>
+
+            <hr class="section-divider">
+
+            <form th:action="@{|/hospital-admin/referrals/${referral.id}/status|}" th:object="${statusForm}" method="post" class="stacked-form">
+                <label>
+                    Next status
+                    <select th:field="*{status}">
+                        <option value="">Select status</option>
+                        <option th:each="status : ${allowedStatuses}" th:value="${status}" th:text="${status.displayName}"></option>
+                    </select>
+                    <small class="field-error" th:errors="*{status}"></small>
+                </label>
+                <label>
+                    Status note
+                    <textarea th:field="*{note}" rows="3" placeholder="Optional note for this status update"></textarea>
+                    <small class="field-error" th:errors="*{note}"></small>
+                </label>
+                <label>
+                    Final outcome
+                    <select th:field="*{closureOutcome}">
+                        <option value="">Select outcome when closing</option>
+                        <option th:each="outcome : ${closureOutcomes}" th:value="${outcome}" th:text="${outcome.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Outcome summary
+                    <textarea th:field="*{closureSummary}" rows="3" placeholder="Required context for completed, rejected, or cancelled referrals"></textarea>
+                    <small class="field-error" th:errors="*{closureSummary}"></small>
+                </label>
+                <button type="submit" class="primary-button" th:disabled="${#lists.isEmpty(allowedStatuses)}">Update status</button>
+                <small class="helper-text" th:if="${#lists.isEmpty(allowedStatuses)}">No further status transitions are available for your hospital on this referral.</small>
+                <small class="helper-text" th:if="${!#lists.isEmpty(allowedStatuses)}">A final outcome is optional. If you leave it blank, the system applies a sensible default when closing the referral.</small>
+            </form>
+
+            <div th:if="${referral.closed}">
+                <hr class="section-divider">
+
+                <form th:action="@{|/hospital-admin/referrals/${referral.id}/closure|}" th:object="${closureForm}" method="post" class="stacked-form">
+                    <h3>Final outcome record</h3>
+                    <label>
+                        Final outcome
+                        <select th:field="*{closureOutcome}">
+                            <option value="">Select final outcome</option>
+                            <option th:each="outcome : ${closureOutcomes}" th:value="${outcome}" th:text="${outcome.displayName}"></option>
+                        </select>
+                        <small class="field-error" th:errors="*{closureOutcome}"></small>
+                    </label>
+                    <label>
+                        Outcome summary
+                        <textarea th:field="*{closureSummary}" rows="3" placeholder="Add or refine the closure summary"></textarea>
+                        <small class="field-error" th:errors="*{closureSummary}"></small>
+                    </label>
+                    <button type="submit" class="secondary-button">Save final outcome</button>
+                    <small class="helper-text">Any changes here are recorded as a separate timeline event.</small>
+                </form>
+            </div>
+
+            <hr class="section-divider">
+
+            <form th:action="@{|/hospital-admin/referrals/${referral.id}/notes|}" th:object="${noteForm}" method="post" class="stacked-form">
+                <label>
+                    Add timeline note
+                    <textarea th:field="*{note}" rows="3" placeholder="Share coordination notes or important updates"></textarea>
+                    <small class="field-error" th:errors="*{note}"></small>
+                </label>
+                <button type="submit" class="secondary-button">Add note</button>
+            </form>
+        </article>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Journey Progress</h2>
+            <p>All linked referrals in this patient's cross-hospital journey.</p>
+        </div>
+        <div class="journey-list">
+            <article class="journey-item" th:each="journeyReferral : ${journeyReferrals}">
+                <div class="journey-main">
+                    <a th:href="@{|/hospital-admin/referrals/${journeyReferral.id}|}" th:text="${journeyReferral.referenceNumber}">REF-001</a>
+                    <small th:text="${journeyReferral.fromHospital.name + ' -> ' + journeyReferral.toHospital.name}">A -> B</small>
+                </div>
+                <div class="journey-side">
+                    <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(journeyReferral.status.name(), '_', '-'))}"
+                          th:text="${journeyReferral.status.displayName}">Submitted</span>
+                    <span class="status-pill" th:classappend="${' ' + journeyReferral.slaBadgeClassFor(currentHospitalId)}" th:text="${journeyReferral.slaBadgeLabelFor(currentHospitalId)}">On track</span>
+                    <small th:if="${journeyReferral.closureOutcome != null}" th:text="${journeyReferral.closureOutcome.displayName}">Admitted</small>
+                    <small th:text="${#temporals.format(journeyReferral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</small>
+                </div>
+            </article>
+        </div>
+        <p th:if="${#lists.isEmpty(journeyReferrals)}" class="empty-state">No linked referrals are visible in this journey yet.</p>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Attachments</h2>
+            <p>Upload and download supporting referral documents.</p>
+        </div>
+        <form th:action="@{|/hospital-admin/referrals/${referral.id}/attachments|}" th:object="${attachmentForm}" method="post" enctype="multipart/form-data" class="stacked-form attachment-upload-form">
+            <label>
+                Upload file
+                <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" required>
+            </label>
+            <label>
+                Document type
+                <select th:field="*{attachmentType}">
+                    <option th:each="attachmentType : ${attachmentTypes}" th:value="${attachmentType}" th:text="${attachmentType.displayName}"></option>
+                </select>
+            </label>
+            <label class="attachment-note-field">
+                Note
+                <textarea th:field="*{note}" rows="3" placeholder="Optional note about this document"></textarea>
+            </label>
+            <button type="submit" class="secondary-button">Upload attachment</button>
+            <small class="helper-text">Allowed formats: PDF, JPG, PNG, DOC, DOCX. Maximum size: 10 MB.</small>
+        </form>
+        <div class="attachment-list">
+            <article class="attachment-item" th:each="attachment : ${attachments}">
+                <div class="attachment-main">
+                    <div class="attachment-title-row">
+                        <strong th:text="${attachment.originalFileName}">document.pdf</strong>
+                        <span class="status-pill status-neutral" th:text="${attachment.attachmentType.displayName}">Lab Result</span>
+                    </div>
+                    <p th:if="${attachment.hasNote()}" class="attachment-note" th:text="${attachment.note}">Attachment note</p>
+                    <small th:text="${attachment.uploadedByName + (attachment.uploadedByRoleName != null ? ' (' + attachment.uploadedByRoleName + ')' : '') + ' • ' + #temporals.format(attachment.createdAt, 'yyyy-MM-dd HH:mm') + ' • ' + attachment.displaySize}">Uploader</small>
+                </div>
+                <div class="attachment-actions">
+                    <a class="secondary-button" th:if="${attachment.previewableInline}" th:href="@{|/attachments/${attachment.id}/view|}" target="_blank" rel="noopener noreferrer">View</a>
+                    <a class="secondary-button" th:href="@{|/attachments/${attachment.id}/download|}">Download</a>
+                    <form th:if="${canManageAttachments}" th:action="@{|/hospital-admin/referrals/${referral.id}/attachments/${attachment.id}/delete|}" method="post" class="inline-form">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="link-button danger-link">Delete</button>
+                    </form>
+                </div>
+            </article>
+            <p th:if="${#lists.isEmpty(attachments)}" class="empty-state">No attachments uploaded yet.</p>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Timeline</h2>
+            <p th:text="${timelineScope == 'journey' ? 'Journey-wide activity across linked referrals.' : 'Every important event for this referral.'}">Every important referral event is recorded here.</p>
+        </div>
+        <form method="get" th:action="@{|/hospital-admin/referrals/${referral.id}|}" class="stacked-form timeline-filters">
+            <label>
+                Timeline scope
+                <select name="timelineScope">
+                    <option value="referral" th:selected="${timelineScope == 'referral'}">This referral only</option>
+                    <option value="journey" th:selected="${timelineScope == 'journey'}">Whole journey</option>
+                </select>
+            </label>
+            <label>
+                Event type
+                <select name="eventType">
+                    <option value="">All event types</option>
+                    <option th:each="eventType : ${timelineEventTypes}" th:value="${eventType.name()}" th:text="${eventType.displayName}"
+                            th:selected="${selectedTimelineEventType == eventType.name()}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{|/hospital-admin/referrals/${referral.id}|}">Reset</a>
+            </div>
+        </form>
+        <div class="timeline">
+            <article class="timeline-item" th:each="event : ${timeline}">
+                <div class="timeline-marker" th:classappend="${' timeline-marker-' + #strings.toLowerCase(#strings.replace(event.eventType.name(), '_', '-'))}"></div>
+                <div class="timeline-content">
+                    <div class="timeline-meta">
+                        <div class="timeline-heading">
+                            <span class="timeline-event-pill" th:classappend="${event.milestone ? ' timeline-event-pill-milestone' : ''}"
+                                  th:text="${event.eventType.displayName}">Status Changed</span>
+                            <strong th:text="${'Event #' + event.id}">Event #1</strong>
+                        </div>
+                        <span th:text="${event.relativeTimeLabel + ' • ' + #temporals.format(event.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</span>
+                    </div>
+                    <div class="timeline-journey-ref" th:if="${timelineScope == 'journey'}">
+                        <a th:href="@{|/hospital-admin/referrals/${event.referral.id}|}" th:text="${event.referral.referenceNumber}">REF-001</a>
+                        <small th:text="${event.referral.fromHospital.name + ' -> ' + event.referral.toHospital.name}">A -> B</small>
+                    </div>
+                    <div class="timeline-transition" th:if="${event.transitionSummary != null}">
+                        <span class="status-pill status-neutral" th:text="${event.transitionSummary}">Submitted -> Received</span>
+                    </div>
+                    <p th:text="${event.details}">Details</p>
+                    <small th:text="${event.actorSummary}">Actor</small>
+                </div>
+            </article>
+            <p th:if="${#lists.isEmpty(timeline)}" class="empty-state">No referral events recorded yet.</p>
+        </div>
+    </section>
+</main>
+</body>
+</html>
