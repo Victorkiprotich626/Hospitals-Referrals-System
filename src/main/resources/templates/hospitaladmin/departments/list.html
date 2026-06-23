@@ -41,3 +41,26 @@
             </thead>
             <tbody>
             <tr th:if="${#lists.isEmpty(departments)}">
+                <td colspan="4" class="empty-state">No departments have been created for this hospital yet.</td>
+            </tr>
+            <tr th:each="department : ${departments}">
+                <td th:text="${department.name}">Department</td>
+                <td th:text="${department.code}">DEPT</td>
+                <td>
+                    <span class="status-pill" th:classappend="${department.enabled ? ' status-active' : ' status-inactive'}"
+                          th:text="${department.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/hospital-admin/departments/${department.id}/edit|}">Edit</a>
+                    <form th:action="@{|/hospital-admin/departments/${department.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this department?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
