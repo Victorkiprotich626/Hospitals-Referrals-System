@@ -27,3 +27,44 @@
         </article>
         <article class="stat-card">
             <span>Doctors</span>
+            <strong th:text="${doctorCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Patients</span>
+            <strong th:text="${patientCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Open referrals</span>
+            <strong th:text="${openReferralCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Incoming attention needed</span>
+            <strong th:text="${incomingAttentionCount}">0</strong>
+        </article>
+    </section>
+
+    <section class="card action-grid">
+        <a class="action-card" th:href="@{/hospital-admin/departments}">
+            <h2>Departments</h2>
+            <p>Maintain the receiving units that incoming referrals can be routed into.</p>
+        </a>
+        <a class="action-card" th:href="@{/hospital-admin/doctors}">
+            <h2>Doctors</h2>
+            <p>Manage clinicians and specialists available for internal assignment.</p>
+        </a>
+        <a class="action-card" th:href="@{/hospital-admin/users}">
+            <h2>Hospital users</h2>
+            <p>Create referral officer, doctor, and viewer accounts for this tenant.</p>
+        </a>
+        <a class="action-card" th:href="@{/hospital-admin/patients}">
+            <h2>Patients</h2>
+            <p>Register and manage patients under this tenant before creating referrals.</p>
+        </a>
+        <a class="action-card" th:href="@{/hospital-admin/referrals}">
+            <h2>Referrals</h2>
+            <p>Create outgoing referrals, review incoming ones, and track every status change.</p>
+        </a>
+    </section>
+</main>
+</body>
+</html>
