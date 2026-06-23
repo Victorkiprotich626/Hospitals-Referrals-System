@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Doctors')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('doctors')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Directory</span>
+            <h1>Doctors</h1>
+            <p>Doctors can be assigned to incoming referrals after they arrive at your hospital.</p>
+        </div>
+        <a class="primary-button" th:href="@{/hospital-admin/doctors/new}">Add doctor</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/hospital-admin/doctors}" class="stacked-form">
+            <label>
+                Search doctors
+                <input type="text" name="q" th:value="${q}" placeholder="Search by name, email, specialty, phone, or department">
+            </label>
+            <label>
+                Filter by department
+                <select name="departmentId">
+                    <option value="">All departments</option>
+                    <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"
+                            th:selected="${departmentId != null && departmentId == department.id}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/hospital-admin/doctors}">Clear</a>
+            </div>
+        </form>
+    </section>
