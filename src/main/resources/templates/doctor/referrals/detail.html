@@ -99,3 +99,82 @@
             <p th:if="${#lists.isEmpty(attachments)}" class="empty-state">No attachments uploaded yet.</p>
         </div>
     </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Journey Progress</h2>
+            <p>All linked referrals in this patient's cross-hospital journey visible to your hospital.</p>
+        </div>
+        <div class="journey-list">
+            <article class="journey-item" th:each="journeyReferral : ${journeyReferrals}">
+                <div class="journey-main">
+                    <strong th:text="${journeyReferral.referenceNumber}">REF-001</strong>
+                    <small th:text="${journeyReferral.fromHospital.name + ' -> ' + journeyReferral.toHospital.name}">A -> B</small>
+                </div>
+                <div class="journey-side">
+                    <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(journeyReferral.status.name(), '_', '-'))}"
+                          th:text="${journeyReferral.status.displayName}">Submitted</span>
+                    <span class="status-pill" th:classappend="${' ' + journeyReferral.slaBadgeClass}" th:text="${journeyReferral.slaBadgeLabel}">On track</span>
+                    <small th:if="${journeyReferral.closureOutcome != null}" th:text="${journeyReferral.closureOutcome.displayName}">Admitted</small>
+                    <small th:text="${#temporals.format(journeyReferral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</small>
+                </div>
+            </article>
+        </div>
+        <p th:if="${#lists.isEmpty(journeyReferrals)}" class="empty-state">No linked referrals are visible in this journey yet.</p>
+    </section>
+
+    <section class="card">
+        <div class="section-heading">
+            <h2>Timeline</h2>
+            <p th:text="${timelineScope == 'journey' ? 'Journey-wide activity across linked referrals.' : 'Shared activity and notes for this referral.'}">Shared activity and notes for this referral.</p>
+        </div>
+        <form method="get" th:action="@{|/doctor/referrals/${referral.id}|}" class="stacked-form timeline-filters">
+            <label>
+                Timeline scope
+                <select name="timelineScope">
+                    <option value="referral" th:selected="${timelineScope == 'referral'}">This referral only</option>
+                    <option value="journey" th:selected="${timelineScope == 'journey'}">Whole journey</option>
+                </select>
+            </label>
+            <label>
+                Event type
+                <select name="eventType">
+                    <option value="">All event types</option>
+                    <option th:each="eventType : ${timelineEventTypes}" th:value="${eventType.name()}" th:text="${eventType.displayName}"
+                            th:selected="${selectedTimelineEventType == eventType.name()}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{|/doctor/referrals/${referral.id}|}">Reset</a>
+            </div>
+        </form>
+        <div class="timeline">
+            <article class="timeline-item" th:each="event : ${timeline}">
+                <div class="timeline-marker" th:classappend="${' timeline-marker-' + #strings.toLowerCase(#strings.replace(event.eventType.name(), '_', '-'))}"></div>
+                <div class="timeline-content">
+                    <div class="timeline-meta">
+                        <div class="timeline-heading">
+                            <span class="timeline-event-pill" th:classappend="${event.milestone ? ' timeline-event-pill-milestone' : ''}"
+                                  th:text="${event.eventType.displayName}">Note Added</span>
+                            <strong th:text="${'Event #' + event.id}">Event #1</strong>
+                        </div>
+                        <span th:text="${event.relativeTimeLabel + ' • ' + #temporals.format(event.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</span>
+                    </div>
+                    <div class="timeline-journey-ref" th:if="${timelineScope == 'journey'}">
+                        <strong th:text="${event.referral.referenceNumber}">REF-001</strong>
+                        <small th:text="${event.referral.fromHospital.name + ' -> ' + event.referral.toHospital.name}">A -> B</small>
+                    </div>
+                    <div class="timeline-transition" th:if="${event.transitionSummary != null}">
+                        <span class="status-pill status-neutral" th:text="${event.transitionSummary}">Submitted -> Received</span>
+                    </div>
+                    <p th:text="${event.details}">Details</p>
+                    <small th:text="${event.actorSummary}">Actor</small>
+                </div>
+            </article>
+            <p th:if="${#lists.isEmpty(timeline)}" class="empty-state">No referral events recorded yet.</p>
+        </div>
+    </section>
+</main>
+</body>
+</html>
