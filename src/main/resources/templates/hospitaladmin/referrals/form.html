@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('referrals')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referrals</span>
+            <h1 th:text="${pageTitle}">Create Referral</h1>
+            <p th:text="${formSubtitle}">Submit a new referral from your hospital to another hospital in the platform.</p>
+        </div>
+    </section>
+
+    <form th:action="${formAction}" th:object="${referralForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <input type="hidden" th:field="*{sourceReferralId}">
+
+        <label th:if="${sourceReferral == null}">
+            Patient
+            <select th:field="*{patientId}">
+                <option value="">Select patient</option>
+                <option th:each="patient : ${patients}" th:value="${patient.id}"
+                        th:text="${patient.patientNumber + ' - ' + patient.fullName}"></option>
+            </select>
+            <small class="field-error" th:errors="*{patientId}"></small>
+        </label>
+
+        <div th:if="${sourceReferral != null}" class="card info-card">
+            <strong>Forwarding Patient</strong>
+            <p th:text="${sourceReferral.patient.fullName + ' (' + sourceReferral.patient.patientNumber + ')'}">Patient</p>
+            <small th:text="${'Journey: ' + sourceReferral.journeyCode + ' • Source referral: ' + sourceReferral.referenceNumber}">Journey</small>
+        </div>
