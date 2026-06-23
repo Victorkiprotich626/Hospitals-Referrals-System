@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Referrals')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referrals</span>
+            <h1>Referral work queue</h1>
+            <p>Track incoming and outgoing referrals with clearer urgency, assignment, and journey progress visibility.</p>
+        </div>
+        <a class="primary-button" th:href="@{/hospital-admin/referrals/new}">Create referral</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="stats-grid queue-stats">
+        <article class="stat-card">
+            <span>Total visible</span>
+            <strong th:text="${#lists.size(referrals)}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Incoming</span>
+            <strong th:text="${incomingCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Outgoing</span>
+            <strong th:text="${outgoingCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Urgent or high</span>
+            <strong th:text="${urgentCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Overdue</span>
+            <strong th:text="${overdueCount}">0</strong>
+        </article>
+    </section>
+
+    <section class="card queue-filter-card">
+        <div class="section-heading">
+            <h2>Filter queue</h2>
+            <p>Narrow the list by search, workflow status, or referral direction.</p>
+        </div>
+        <form method="get" th:action="@{/hospital-admin/referrals}" class="queue-filter-form">
+            <label class="queue-filter-search">
+                Search referrals
+                <input type="text" name="q" th:value="${q}" placeholder="Search by reference, journey, patient, subject, hospital, or assignment">
+            </label>
+            <label>
+                Status
+                <select name="status">
+                    <option value="">All statuses</option>
+                    <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption.displayName}"
+                            th:selected="${selectedStatus == statusOption}"></option>
+                </select>
+            </label>
+            <label>
+                Direction
+                <select name="direction">
+                    <option value="">All directions</option>
+                    <option value="incoming" th:selected="${selectedDirection == 'incoming'}">Incoming</option>
+                    <option value="outgoing" th:selected="${selectedDirection == 'outgoing'}">Outgoing</option>
+                </select>
+            </label>
+            <div class="form-actions queue-filter-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/hospital-admin/referrals}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="queue-results-header" th:if="${!#lists.isEmpty(referrals)}">
+        <div>
+            <span class="eyebrow">Queue Results</span>
+            <h2 th:text="${#lists.size(referrals) + ' referrals in view'}">0 referrals in view</h2>
+        </div>
+        <p>Open any referral card to continue routing, review status progress, or inspect the full journey timeline.</p>
+    </section>
+
+    <section class="queue-board" th:if="${!#lists.isEmpty(referrals)}">
+        <article class="queue-card" th:each="referral : ${referrals}">
+            <div class="queue-card-top">
+                <div class="queue-card-main">
+                    <div class="queue-card-title-row">
+                        <a class="queue-ref-link" th:href="@{|/hospital-admin/referrals/${referral.id}|}" th:text="${referral.referenceNumber}">REF-001</a>
+                        <span class="status-pill"
+                              th:classappend="${referral.isIncomingFor(currentHospitalId) ? ' status-info' : ' status-neutral'}"
+                              th:text="${referral.isIncomingFor(currentHospitalId) ? 'Incoming' : 'Outgoing'}">Incoming</span>
+                        <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}"
+                              th:text="${referral.status.displayName}">Submitted</span>
+                        <span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}"
+                              th:text="${referral.priority.displayName}">Normal</span>
+                        <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClassFor(currentHospitalId)}"
+                              th:text="${referral.slaBadgeLabelFor(currentHospitalId)}">On track</span>
+                    </div>
+                    <h3 th:text="${referral.patient.fullName}">Patient Name</h3>
+                    <p th:text="${referral.subject}">Referral subject</p>
+                    <small th:text="${referral.patient.patientNumber + ' • ' + referral.journeyCode}">PAT-001 • JRNY-001</small>
+                </div>
+                <div class="queue-card-side">
+                    <span class="queue-timestamp-label">Last updated</span>
+                    <strong th:text="${#temporals.format(referral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22 10:45</strong>
+                    <small th:text="${referral.isClosed() ? (referral.closureSummary ?: 'Final workflow recorded') : (referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId))}">Due in 2 days</small>
+                </div>
+            </div>
+
+            <div class="queue-card-grid">
+                <div class="queue-fact">
+                    <span>Counterparty</span>
+                    <strong th:text="${referral.isIncomingFor(currentHospitalId) ? referral.fromHospital.name : referral.toHospital.name}">Hospital</strong>
+                </div>
+                <div class="queue-fact">
+                    <span>Assignment</span>
+                    <strong th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'No department'}">No department</strong>
+                    <small th:text="${referral.assignedDoctor != null ? referral.assignedDoctor.fullName : 'No doctor assigned'}">No doctor assigned</small>
+                </div>
+                <div class="queue-fact">
+                    <span>Journey step</span>
+                    <strong th:text="${referral.parentReferral != null ? 'Forwarded referral' : 'Journey origin'}">Journey origin</strong>
+                    <small th:text="${referral.parentReferral != null ? 'From ' + referral.parentReferral.referenceNumber : 'First referral in the chain'}">First referral in the chain</small>
+                </div>
+                <div class="queue-fact">
+                    <span>Closure outcome</span>
+                    <strong th:text="${referral.closureOutcome != null ? referral.closureOutcome.displayName : 'Still active'}">Still active</strong>
+                    <small th:text="${referral.closureSummary ?: 'Outcome will appear here when the referral is closed.'}">Outcome will appear here when the referral is closed.</small>
+                </div>
+            </div>
+
+            <div class="queue-card-actions">
+                <a class="secondary-button" th:href="@{|/hospital-admin/referrals/${referral.id}|}">Open referral</a>
+                <a class="secondary-button" th:if="${referral.parentReferral != null}" th:href="@{|/hospital-admin/referrals/${referral.parentReferral.id}|}">View previous step</a>
+            </div>
+        </article>
+    </section>
+
+    <section class="card" th:if="${#lists.isEmpty(referrals)}">
+        <div class="empty-state queue-empty-state">
+            <h2>No referrals match the current view</h2>
+            <p>Try clearing the filters or create a new referral to start a patient journey.</p>
+            <a class="primary-button" th:href="@{/hospital-admin/referrals/new}">Create referral</a>
+        </div>
+    </section>
+</main>
+</body>
+</html>
