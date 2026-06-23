@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('users')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Users</span>
+            <h1 th:text="${pageTitle}">Hospital User</h1>
+            <p>Create role-based accounts for referral operations inside this hospital.</p>
+        </div>
+    </section>
+
+    <form th:action="${formAction}" th:object="${hospitalUserForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+        <label>
+            First name
+            <input type="text" th:field="*{firstName}" placeholder="Mary">
+            <small class="field-error" th:errors="*{firstName}"></small>
+        </label>
+
+        <label>
+            Last name
+            <input type="text" th:field="*{lastName}" placeholder="Kamau">
+            <small class="field-error" th:errors="*{lastName}"></small>
+        </label>
+
+        <label>
+            Email
+            <input type="email" th:field="*{email}" placeholder="staff@hospital.org">
+            <small class="field-error" th:errors="*{email}"></small>
+        </label>
+
+        <label>
+            Role
+            <select th:field="*{role}">
+                <option value="">Select role</option>
+                <option th:each="role : ${roles}" th:value="${role}" th:text="${role.name()}"></option>
+            </select>
+            <small class="field-error" th:errors="*{role}"></small>
+        </label>
+
+        <label>
+            Department
+            <select th:field="*{departmentId}">
+                <option value="">No department</option>
+                <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+            </select>
+        </label>
