@@ -36,3 +36,46 @@
             </div>
         </form>
     </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Specialty</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(doctors)}">
+                <td colspan="6" class="empty-state">No doctors have been created for this hospital yet.</td>
+            </tr>
+            <tr th:each="doctor : ${doctors}">
+                <td>
+                    <div th:text="${doctor.fullName}">Doctor Name</div>
+                    <small th:text="${doctor.phoneNumber ?: 'No phone'}">No phone</small>
+                </td>
+                <td th:text="${doctor.email}">doctor@hospital.org</td>
+                <td th:text="${doctor.department != null ? doctor.department.name : 'Unassigned'}">Department</td>
+                <td th:text="${doctor.specialty ?: 'Not specified'}">Specialty</td>
+                <td>
+                    <span class="status-pill" th:classappend="${doctor.enabled ? ' status-active' : ' status-inactive'}"
+                          th:text="${doctor.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/hospital-admin/doctors/${doctor.id}/edit|}">Edit</a>
+                    <form th:action="@{|/hospital-admin/doctors/${doctor.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this doctor?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
