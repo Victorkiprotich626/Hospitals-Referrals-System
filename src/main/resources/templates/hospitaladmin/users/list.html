@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hospital Users')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: hospitalAdminNavbar('users')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Users</span>
+            <h1>Hospital users</h1>
+            <p>Manage referral officer, doctor, and viewer accounts inside this tenant.</p>
+        </div>
+        <a class="primary-button" th:href="@{/hospital-admin/users/new}">Add user</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/hospital-admin/users}" class="stacked-form">
+            <label>
+                Search users
+                <input type="text" name="q" th:value="${q}" placeholder="Search by name, email, role, department, or doctor">
+            </label>
+            <label>
+                Filter by role
+                <select name="role">
+                    <option value="">All roles</option>
+                    <option th:each="roleOption : ${roles}" th:value="${roleOption}" th:text="${roleOption.name()}"
+                            th:selected="${selectedRole == roleOption}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/hospital-admin/users}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Department</th>
+                <th>Doctor Profile</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="7" class="empty-state">No hospital users have been created yet.</td>
+            </tr>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.fullName}">User Name</td>
+                <td th:text="${user.email}">user@hospital.org</td>
+                <td th:text="${user.primaryRole != null ? user.primaryRole.name() : 'Unknown'}">REFERRAL_OFFICER</td>
+                <td th:text="${user.department != null ? user.department.name : 'Unassigned'}">Department</td>
+                <td th:text="${user.doctorProfile != null ? user.doctorProfile.fullName : 'Not linked'}">Doctor</td>
+                <td>
+                    <span class="status-pill" th:classappend="${user.enabled ? ' status-active' : ' status-inactive'}"
+                          th:text="${user.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/hospital-admin/users/${user.id}/edit|}">Edit</a>
+                    <form th:action="@{|/hospital-admin/users/${user.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this user account?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
