@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Referral Officer Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: referralOfficerNavbar('dashboard')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referral Officer</span>
+            <h1>Referral operations</h1>
+            <p>Manage the hospital work queue, update statuses, and route incoming referrals internally.</p>
+        </div>
+    </section>
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Open referrals</span>
+            <strong th:text="${openReferralCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Incoming attention needed</span>
+            <strong th:text="${incomingAttentionCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Visible referrals</span>
+            <strong th:text="${#lists.size(referrals)}">0</strong>
+        </article>
+    </section>
+    <section class="card action-grid">
+        <a class="action-card" th:href="@{/referral-officer/referrals/new}">
+            <h2>Create referral</h2>
+            <p>Start a new outgoing referral for a patient in this hospital.</p>
+        </a>
+        <a class="action-card" th:href="@{/referral-officer/referrals}">
+            <h2>Referral queue</h2>
+            <p>Open the work queue to review, route, and progress referrals.</p>
+        </a>
+    </section>
+</main>
+</body>
+</html>
