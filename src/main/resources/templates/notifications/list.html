@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Notifications')}"></head>
+<body>
+<th:block th:switch="${workspaceRole}">
+    <th:block th:case="'SUPER_ADMIN'">
+        <header th:replace="~{fragments/layout :: navbar('')}"></header>
+    </th:block>
+    <th:block th:case="'HOSPITAL_ADMIN'">
+        <header th:replace="~{fragments/layout :: hospitalAdminNavbar('')}"></header>
+    </th:block>
+    <th:block th:case="'REFERRAL_OFFICER'">
+        <header th:replace="~{fragments/layout :: referralOfficerNavbar('')}"></header>
+    </th:block>
+    <th:block th:case="'DOCTOR'">
+        <header th:replace="~{fragments/layout :: doctorNavbar('')}"></header>
+    </th:block>
+    <th:block th:case="'VIEWER'">
+        <header th:replace="~{fragments/layout :: viewerNavbar('')}"></header>
+    </th:block>
+    <th:block th:case="*">
+        <header th:replace="~{fragments/layout :: navbar('')}"></header>
+    </th:block>
+</th:block>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Notifications</span>
+            <h1>Inbox</h1>
+            <p>Recent system alerts about referral activity, routing, documents, and status changes.</p>
+            <p><a th:href="${workspaceHome}" th:text="${'Back to ' + workspaceLabel}">Back to dashboard</a></p>
+        </div>
+        <form th:action="@{/notifications/read-all}" method="post" class="inline-form">
+            <button type="submit" class="secondary-button">Mark all read</button>
+        </form>
+    </section>
