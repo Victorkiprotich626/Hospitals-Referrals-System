@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hospital Admins')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar('admins')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">User Management</span>
+            <h1>Hospital administrators</h1>
+            <p>Each hospital should have at least one administrator who manages tenant users and configuration.</p>
+        </div>
+        <a class="primary-button" th:href="@{/super-admin/admins/new}">Add admin</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/super-admin/admins}" class="stacked-form">
+            <label>
+                Search administrators
+                <input type="text" name="q" th:value="${q}" placeholder="Search by name, email, hospital, or code">
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Search</button>
+                <a class="secondary-button" th:href="@{/super-admin/admins}">Clear</a>
+            </div>
+        </form>
+    </section>
