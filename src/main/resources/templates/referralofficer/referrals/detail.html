@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Referral Detail')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: referralOfficerNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referral Officer</span>
+            <h1 th:text="${referral.referenceNumber}">REF-001</h1>
+            <p th:text="${referral.subject}">Referral subject</p>
+        </div>
+        <div class="header-actions">
+            <a class="secondary-button" th:href="@{/referral-officer/referrals}">Back to queue</a>
+            <a class="primary-button" th:if="${canForward}" th:href="@{|/referral-officer/referrals/${referral.id}/forward|}">Forward onward</a>
+        </div>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+    <section class="urgency-banner" th:if="${referral.urgentCase and !referral.closed}">
+        <strong th:text="${referral.priority.displayName + ' priority referral'}">Urgent priority referral</strong>
+        <span th:text="${referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId)}">Due in 2 days</span>
+    </section>
+
+    <section class="detail-grid">
+        <article class="card detail-card">
+            <h2>Overview</h2>
+            <dl class="detail-list">
+                <div><dt>Patient</dt><dd th:text="${referral.patient.fullName + ' (' + referral.patient.patientNumber + ')'}">Patient</dd></div>
+                <div><dt>Status</dt><dd><span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}" th:text="${referral.status.displayName}">Submitted</span></dd></div>
+                <div><dt>Priority</dt><dd><span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}" th:text="${referral.priority.displayName}">Normal</span></dd></div>
+                <div>
+                    <dt>SLA</dt>
+                    <dd>
+                        <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClassFor(currentHospitalId)}" th:text="${referral.slaBadgeLabelFor(currentHospitalId)}">On track</span>
+                        <small th:text="${referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId)}">Due in 2 days</small>
+                    </dd>
+                </div>
+                <div><dt>Waiting time</dt><dd th:text="${referral.waitingLabelFor(currentHospitalId) ?: 'Closed'}">Waiting 2 days</dd></div>
+                <div><dt>From hospital</dt><dd th:text="${referral.fromHospital.name}">Origin</dd></div>
+                <div><dt>To hospital</dt><dd th:text="${referral.toHospital.name}">Destination</dd></div>
+                <div><dt>Assigned department</dt><dd th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'Not assigned'}">Department</dd></div>
+                <div><dt>Assigned doctor</dt><dd th:text="${referral.assignedDoctor != null ? referral.assignedDoctor.fullName : 'Not assigned'}">Doctor</dd></div>
+                <div><dt>Journey code</dt><dd th:text="${referral.journeyCode}">JRNY-001</dd></div>
+                <div>
+                    <dt>Parent referral</dt>
+                    <dd>
+                        <a th:if="${referral.parentReferral != null}" th:href="@{|/referral-officer/referrals/${referral.parentReferral.id}|}"
+                           th:text="${referral.parentReferral.referenceNumber}">REF-000</a>
+                        <span th:if="${referral.parentReferral == null}">Journey origin</span>
+                    </dd>
+                </div>
+                <div><dt>Reason</dt><dd th:text="${referral.referralReason}">Reason</dd></div>
+                <div><dt>Clinical summary</dt><dd th:text="${referral.clinicalSummary ?: 'No clinical summary provided'}">Summary</dd></div>
+                <div><dt>Final outcome</dt><dd th:text="${referral.closureOutcome != null ? referral.closureOutcome.displayName : 'Not closed yet'}">Redirected</dd></div>
+                <div th:if="${referral.closureSummary != null}"><dt>Outcome summary</dt><dd th:text="${referral.closureSummary}">Redirected to another hospital.</dd></div>
+            </dl>
+        </article>
+
+        <article class="card detail-card">
+            <h2>Actions</h2>
+            <form th:action="@{|/referral-officer/referrals/${referral.id}/assign|}" th:object="${assignmentForm}" method="post" class="stacked-form">
+                <label>
+                    Route to department
+                    <select th:field="*{departmentId}">
+                        <option value="">No department</option>
+                        <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
+                    </select>
+                </label>
+                <label>
+                    Assign doctor
+                    <select th:field="*{doctorId}">
+                        <option value="">No doctor</option>
+                        <option th:each="doctor : ${doctors}" th:value="${doctor.id}"
+                                th:text="${doctor.fullName + (doctor.department != null ? ' - ' + doctor.department.name : '')}"></option>
+                    </select>
+                </label>
+                <button type="submit" class="secondary-button">Route referral</button>
+            </form>
+
+            <hr class="section-divider">
+
+            <form th:action="@{|/referral-officer/referrals/${referral.id}/status|}" th:object="${statusForm}" method="post" class="stacked-form">
+                <label>
+                    Next status
+                    <select th:field="*{status}">
+                        <option value="">Select status</option>
+                        <option th:each="status : ${allowedStatuses}" th:value="${status}" th:text="${status.displayName}"></option>
+                    </select>
+                    <small class="field-error" th:errors="*{status}"></small>
+                </label>
+                <label>
+                    Status note
+                    <textarea th:field="*{note}" rows="3" placeholder="Optional note for this status update"></textarea>
+                    <small class="field-error" th:errors="*{note}"></small>
+                </label>
+                <label>
+                    Final outcome
+                    <select th:field="*{closureOutcome}">
+                        <option value="">Select outcome when closing</option>
+                        <option th:each="outcome : ${closureOutcomes}" th:value="${outcome}" th:text="${outcome.displayName}"></option>
+                    </select>
+                </label>
+                <label>
+                    Outcome summary
+                    <textarea th:field="*{closureSummary}" rows="3" placeholder="Required context for completed, rejected, or cancelled referrals"></textarea>
+                    <small class="field-error" th:errors="*{closureSummary}"></small>
+                </label>
+                <button type="submit" class="primary-button" th:disabled="${#lists.isEmpty(allowedStatuses)}">Update status</button>
+                <small class="helper-text" th:if="${!#lists.isEmpty(allowedStatuses)}">A final outcome is optional. If you leave it blank, the system applies a sensible default when closing the referral.</small>
+            </form>
+
+            <div th:if="${referral.closed}">
+                <hr class="section-divider">
+
+                <form th:action="@{|/referral-officer/referrals/${referral.id}/closure|}" th:object="${closureForm}" method="post" class="stacked-form">
+                    <h3>Final outcome record</h3>
+                    <label>
+                        Final outcome
+                        <select th:field="*{closureOutcome}">
+                            <option value="">Select final outcome</option>
+                            <option th:each="outcome : ${closureOutcomes}" th:value="${outcome}" th:text="${outcome.displayName}"></option>
+                        </select>
+                        <small class="field-error" th:errors="*{closureOutcome}"></small>
+                    </label>
+                    <label>
