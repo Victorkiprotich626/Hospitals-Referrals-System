@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Super Admin Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar('dashboard')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Super Admin</span>
+            <h1>Platform overview</h1>
+            <p>Manage tenants, onboard hospital administrators, and prepare the foundation for referral workflows.</p>
+        </div>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Total hospitals</span>
+            <strong th:text="${hospitalCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Hospital admins</span>
+            <strong th:text="${hospitalAdminCount}">0</strong>
+        </article>
+    </section>
+
+    <section class="card action-grid">
+        <a class="action-card" th:href="@{/super-admin/hospitals}">
+            <h2>Hospitals</h2>
+            <p>Create, edit, enable, and control tenant records.</p>
+        </a>
+        <a class="action-card" th:href="@{/super-admin/admins}">
+            <h2>Hospital admins</h2>
+            <p>Assign administrator accounts to each onboarded hospital.</p>
+        </a>
+    </section>
+</main>
+</body>
+</html>
