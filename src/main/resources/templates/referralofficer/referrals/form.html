@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: referralOfficerNavbar('referrals')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referral Officer</span>
+            <h1 th:text="${pageTitle}">Forward Referral</h1>
+            <p th:text="${formSubtitle}">Create the next referral in this patient's journey while preserving cross-hospital tracking.</p>
+        </div>
+    </section>
+
+    <form th:action="${formAction}" th:object="${referralForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+        <input type="hidden" th:field="*{sourceReferralId}">
+
+        <label th:if="${sourceReferral == null}">
+            Patient
+            <select th:field="*{patientId}">
+                <option value="">Select patient</option>
+                <option th:each="patient : ${patients}" th:value="${patient.id}"
+                        th:text="${patient.patientNumber + ' - ' + patient.fullName}"></option>
+            </select>
+            <small class="field-error" th:errors="*{patientId}"></small>
+        </label>
+
+        <div class="card info-card" th:if="${sourceReferral != null}">
+            <strong>Forwarding Patient</strong>
+            <p th:text="${sourceReferral.patient.fullName + ' (' + sourceReferral.patient.patientNumber + ')'}">Patient</p>
+            <small th:text="${'Journey: ' + sourceReferral.journeyCode + ' • Source referral: ' + sourceReferral.referenceNumber}">Journey</small>
+        </div>
+
+        <label>
+            Receiving hospital
+            <select th:field="*{toHospitalId}">
+                <option value="">Select hospital</option>
+                <option th:each="hospital : ${hospitals}" th:value="${hospital.id}" th:text="${hospital.name}"></option>
+            </select>
+            <small class="field-error" th:errors="*{toHospitalId}"></small>
+        </label>
+
+        <label>
+            Priority
+            <select th:field="*{priority}">
+                <option value="">Select priority</option>
+                <option th:each="priority : ${priorities}" th:value="${priority}" th:text="${priority.displayName}"></option>
+            </select>
+            <small class="field-error" th:errors="*{priority}"></small>
+        </label>
+
+        <label>
+            Subject
+            <input type="text" th:field="*{subject}" placeholder="Cardiology review request">
+            <small class="field-error" th:errors="*{subject}"></small>
+        </label>
+
+        <label>
+            Referral reason
+            <textarea th:field="*{referralReason}" rows="4" placeholder="Why the patient is being referred"></textarea>
+            <small class="field-error" th:errors="*{referralReason}"></small>
+        </label>
+
+        <label>
+            Clinical summary
+            <textarea th:field="*{clinicalSummary}" rows="5" placeholder="Relevant medical history, findings, and tests"></textarea>
+            <small class="field-error" th:errors="*{clinicalSummary}"></small>
+        </label>
+
+        <label>
+            Receiving department
+            <input type="text" th:field="*{receivingDepartment}" placeholder="Cardiology">
+            <small class="field-error" th:errors="*{receivingDepartment}"></small>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/referral-officer/referrals}">Cancel</a>
+            <button type="submit" class="primary-button" th:text="${submitLabel}">Forward referral</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
