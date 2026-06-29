@@ -34,3 +34,42 @@
             <button type="submit" class="secondary-button">Mark all read</button>
         </form>
     </section>
+
+    <section class="card">
+        <form method="get" th:action="@{/notifications}" class="stacked-form">
+            <label>
+                Search notifications
+                <input type="text" name="q" th:value="${q}" placeholder="Search by title, message, or type">
+            </label>
+            <label class="checkbox-row">
+                <input type="checkbox" name="unreadOnly" value="true" th:checked="${unreadOnly}">
+                <span>Show unread only</span>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/notifications}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <div class="notification-list">
+            <a class="notification-item" th:each="notification : ${notifications}"
+               th:href="@{|/notifications/${notification.id}|}"
+               th:classappend="${notification.unread} ? ' unread-notification' : ''">
+                <div class="notification-content">
+                    <div class="timeline-meta">
+                        <strong th:text="${notification.title}">Notification title</strong>
+                        <span th:text="${#temporals.format(notification.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</span>
+                    </div>
+                    <p th:text="${notification.message}">Notification message</p>
+                    <small th:text="${notification.type.displayName}">Type</small>
+                </div>
+                <span class="notification-pill" th:if="${notification.unread}">Unread</span>
+            </a>
+            <p th:if="${#lists.isEmpty(notifications)}" class="empty-state">No notifications yet.</p>
+        </div>
+    </section>
+</main>
+</body>
+</html>
