@@ -49,3 +49,32 @@
                 <option th:each="department : ${departments}" th:value="${department.id}" th:text="${department.name}"></option>
             </select>
         </label>
+
+        <label>
+            Doctor profile
+            <select th:field="*{doctorProfileId}">
+                <option value="">No doctor profile</option>
+                <option th:each="doctor : ${doctors}" th:value="${doctor.id}" th:text="${doctor.fullName}"></option>
+            </select>
+        </label>
+
+        <label>
+            Password
+            <input type="password" th:field="*{password}" placeholder="Required for new users">
+            <small class="helper-text">Leave blank during edit to keep the current password.</small>
+            <small class="field-error" th:errors="*{password}"></small>
+        </label>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{enabled}">
+            <span>Account is active</span>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/hospital-admin/users}">Cancel</a>
+            <button type="submit" class="primary-button">Save user</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
