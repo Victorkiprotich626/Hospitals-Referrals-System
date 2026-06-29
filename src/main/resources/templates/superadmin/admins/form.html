@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar('admins')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">User Management</span>
+            <h1 th:text="${pageTitle}">Hospital Admin</h1>
+            <p>Assign an administrative contact to a hospital tenant.</p>
+        </div>
+    </section>
+
+    <form th:action="@{${formAction}}" th:object="${hospitalAdminForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+        <label>
+            First name
+            <input type="text" th:field="*{firstName}" placeholder="Grace">
+            <small class="field-error" th:errors="*{firstName}"></small>
+        </label>
+
+        <label>
+            Last name
+            <input type="text" th:field="*{lastName}" placeholder="Wanjiku">
+            <small class="field-error" th:errors="*{lastName}"></small>
+        </label>
+
+        <label>
+            Email
+            <input type="email" th:field="*{email}" placeholder="admin@hospital.org">
+            <small class="field-error" th:errors="*{email}"></small>
+        </label>
+
+        <label>
+            Hospital
+            <select th:field="*{hospitalId}">
+                <option value="">Select hospital</option>
+                <option th:each="hospital : ${hospitals}" th:value="${hospital.id}" th:text="${hospital.name}"></option>
+            </select>
+            <small class="field-error" th:errors="*{hospitalId}"></small>
+        </label>
+
+        <label>
+            Password
+            <input type="password" th:field="*{password}" placeholder="Required for new admins">
+            <small class="helper-text">Leave blank during edit to keep the current password.</small>
+            <small class="field-error" th:errors="*{password}"></small>
+        </label>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{enabled}">
+            <span>Account is active</span>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/super-admin/admins}">Cancel</a>
+            <button type="submit" class="primary-button">Save admin</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
