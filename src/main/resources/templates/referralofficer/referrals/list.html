@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Referral Queue')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: referralOfficerNavbar('referrals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Referral Officer</span>
+            <h1>Referral queue</h1>
+            <p>Visible referrals for this hospital, including incoming and outgoing records.</p>
+        </div>
+        <a class="primary-button" th:href="@{/referral-officer/referrals/new}">Create referral</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/referral-officer/referrals}" class="stacked-form">
+            <label>
+                Search referrals
+                <input type="text" name="q" th:value="${q}" placeholder="Search by reference, journey, patient, subject, hospital, or assignment">
+            </label>
+            <label>
+                Filter by status
+                <select name="status">
+                    <option value="">All statuses</option>
+                    <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption.displayName}"
+                            th:selected="${selectedStatus == statusOption}"></option>
+                </select>
+            </label>
+            <label>
+                Filter by direction
+                <select name="direction">
+                    <option value="">All directions</option>
+                    <option value="incoming" th:selected="${selectedDirection == 'incoming'}">Incoming</option>
+                    <option value="outgoing" th:selected="${selectedDirection == 'outgoing'}">Outgoing</option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/referral-officer/referrals}">Clear</a>
+            </div>
+        </form>
+    </section>
