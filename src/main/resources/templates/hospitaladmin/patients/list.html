@@ -28,3 +28,43 @@
             </div>
         </form>
     </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Patient No.</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Date of birth</th>
+                <th>Contact</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(patients)}">
+                <td colspan="6" class="empty-state">No patients have been added for this hospital yet.</td>
+            </tr>
+            <tr th:each="patient : ${patients}">
+                <td th:text="${patient.patientNumber}">PAT-001</td>
+                <td th:text="${patient.fullName}">Patient Name</td>
+                <td th:text="${patient.gender.displayName}">Gender</td>
+                <td th:text="${patient.dateOfBirth}">1990-01-01</td>
+                <td>
+                    <div th:text="${patient.phoneNumber ?: 'No phone'}">No phone</div>
+                    <small th:text="${patient.nationalId ?: 'No national ID'}">No national ID</small>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/hospital-admin/patients/${patient.id}/edit|}">Edit</a>
+                    <form th:action="@{|/hospital-admin/patients/${patient.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this patient? This only works when there are no referrals linked.')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
