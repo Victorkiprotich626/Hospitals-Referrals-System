@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Viewer Reports')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: viewerNavbar('reports')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Viewer</span>
+            <h1>Operational reports</h1>
+            <p>Read-only referral reporting for this tenant, including workloads, counterparties, and recent activity.</p>
+        </div>
+        <a class="primary-button" th:href="@{/viewer/reports/export.csv(q=${q},status=${selectedStatus})}">Export CSV</a>
+    </section>
+
+    <section class="card">
+        <form method="get" th:action="@{/viewer/reports}" class="stacked-form">
+            <label>
+                Search recent referrals
+                <input type="text" name="q" th:value="${q}" placeholder="Search by reference, patient, hospital, department, or doctor">
+            </label>
+            <label>
+                Filter by status
+                <select name="status">
+                    <option value="">All statuses</option>
+                    <option th:each="statusOption : ${statuses}" th:value="${statusOption}" th:text="${statusOption.displayName}"
+                            th:selected="${selectedStatus == statusOption}"></option>
+                </select>
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Apply</button>
+                <a class="secondary-button" th:href="@{/viewer/reports}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Departments</span>
+            <strong th:text="${report.departmentCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Doctors</span>
+            <strong th:text="${report.doctorCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Patients</span>
+            <strong th:text="${report.patientCount}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Assigned referrals</span>
+            <strong th:text="${report.assignedReferrals}">0</strong>
+        </article>
+    </section>
+
+    <section class="detail-grid">
+        <article class="card detail-card">
+            <h2>Counterparty hospitals</h2>
+            <table class="data-table compact-table">
+                <thead>
+                <tr>
+                    <th>Hospital</th>
+                    <th>Referrals</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${report.counterpartyCounts}">
+                    <td th:text="${entry.key}">Hospital Name</td>
+                    <td th:text="${entry.value}">0</td>
+                </tr>
+                <tr th:if="${#maps.isEmpty(report.counterpartyCounts)}">
+                    <td colspan="2" class="empty-state">No counterparty hospitals found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+
+        <article class="card detail-card">
+            <h2>Recent referrals</h2>
+            <table class="data-table compact-table">
+                <thead>
+                <tr>
+                    <th>Reference</th>
+                    <th>Patient</th>
+                    <th>Status</th>
+                    <th>Updated</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="referral : ${report.recentReferrals}">
+                    <td th:text="${referral.referenceNumber}">REF-001</td>
+                    <td th:text="${referral.patient.fullName}">Patient Name</td>
+                    <td th:text="${referral.status.displayName}">Submitted</td>
+                    <td th:text="${#temporals.format(referral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(report.recentReferrals)}">
+                    <td colspan="4" class="empty-state">No recent referrals available.</td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+    </section>
+</main>
+</body>
+</html>
