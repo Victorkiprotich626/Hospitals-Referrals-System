@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Viewer Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: viewerNavbar('dashboard')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Viewer</span>
+            <h1>Tenant reporting overview</h1>
+            <p>Read-only operational visibility across this hospital's referrals, assignments, and workload trends.</p>
+        </div>
+        <a class="secondary-button" th:href="@{/viewer/reports}">Open full reports</a>
+    </section>
+
+    <section class="stats-grid">
+        <article class="stat-card">
+            <span>Total referrals</span>
+            <strong th:text="${report.totalReferrals}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Open referrals</span>
+            <strong th:text="${report.openReferrals}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Incoming referrals</span>
+            <strong th:text="${report.incomingReferrals}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Outgoing referrals</span>
+            <strong th:text="${report.outgoingReferrals}">0</strong>
+        </article>
+        <article class="stat-card">
