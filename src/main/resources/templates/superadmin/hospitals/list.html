@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Hospitals')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar('hospitals')}"></header>
+<main class="page-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Tenants</span>
+            <h1>Hospitals</h1>
+            <p>Each hospital represents a tenant in the shared database model.</p>
+        </div>
+        <a class="primary-button" th:href="@{/super-admin/hospitals/new}">Add hospital</a>
+    </section>
+
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+
+    <section class="card">
+        <form method="get" th:action="@{/super-admin/hospitals}" class="stacked-form">
+            <label>
+                Search hospitals
+                <input type="text" name="q" th:value="${q}" placeholder="Search by name, code, email, phone, or address">
+            </label>
+            <div class="form-actions">
+                <button type="submit" class="secondary-button">Search</button>
+                <a class="secondary-button" th:href="@{/super-admin/hospitals}">Clear</a>
+            </div>
+        </form>
+    </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Contact</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(hospitals)}">
+                <td colspan="5" class="empty-state">No hospitals have been added yet.</td>
+            </tr>
+            <tr th:each="hospital : ${hospitals}">
+                <td th:text="${hospital.name}">Hospital</td>
+                <td th:text="${hospital.code}">CODE</td>
+                <td>
+                    <div th:text="${hospital.contactEmail ?: 'No email'}">No email</div>
+                    <small th:text="${hospital.contactPhone ?: 'No phone'}">No phone</small>
+                </td>
+                <td>
+                    <span class="status-pill" th:classappend="${hospital.enabled ? ' status-active' : ' status-inactive'}"
+                          th:text="${hospital.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/super-admin/hospitals/${hospital.id}/edit|}">Edit</a>
+                    <form th:action="@{|/super-admin/hospitals/${hospital.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this hospital? This only works when no users are attached.')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
