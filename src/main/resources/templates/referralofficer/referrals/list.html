@@ -44,3 +44,62 @@
             </div>
         </form>
     </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Reference</th>
+                <th>Patient</th>
+                <th>Journey</th>
+                <th>Direction</th>
+                <th>Counterparty</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>SLA</th>
+                <th>Assignment</th>
+                <th>Updated</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(referrals)}">
+                <td colspan="10" class="empty-state">No referrals found for this hospital yet.</td>
+            </tr>
+            <tr th:each="referral : ${referrals}">
+                <td><a th:href="@{|/referral-officer/referrals/${referral.id}|}" th:text="${referral.referenceNumber}">REF-001</a></td>
+                <td>
+                    <div th:text="${referral.patient.fullName}">Patient Name</div>
+                    <small th:text="${referral.patient.patientNumber}">PAT-001</small>
+                </td>
+                <td>
+                    <div th:text="${referral.journeyCode}">JRNY-001</div>
+                    <small th:text="${referral.parentReferral != null ? 'Forwarded from ' + referral.parentReferral.referenceNumber : 'Journey origin'}">Journey origin</small>
+                </td>
+                <td>
+                    <span class="status-pill"
+                          th:classappend="${referral.isIncomingFor(currentHospitalId) ? ' status-info' : ' status-neutral'}"
+                          th:text="${referral.isIncomingFor(currentHospitalId) ? 'Incoming' : 'Outgoing'}">Incoming</span>
+                </td>
+                <td th:text="${referral.isIncomingFor(currentHospitalId) ? referral.fromHospital.name : referral.toHospital.name}">Hospital</td>
+                <td>
+                    <span class="status-pill" th:classappend="${' status-' + #strings.toLowerCase(#strings.replace(referral.status.name(), '_', '-'))}"
+                          th:text="${referral.status.displayName}">Submitted</span>
+                    <small th:if="${referral.closureOutcome != null}" th:text="${referral.closureOutcome.displayName}">Redirected</small>
+                </td>
+                <td><span class="status-pill" th:classappend="${' priority-' + #strings.toLowerCase(referral.priority.name())}" th:text="${referral.priority.displayName}">Urgent</span></td>
+                <td>
+                    <span class="status-pill" th:classappend="${' ' + referral.slaBadgeClassFor(currentHospitalId)}" th:text="${referral.slaBadgeLabelFor(currentHospitalId)}">Due today</span>
+                    <small th:text="${referral.isClosed() ? (referral.closureSummary ?: 'Final workflow recorded') : (referral.slaDetailLabelFor(currentHospitalId) ?: referral.waitingLabelFor(currentHospitalId))}">Waiting 3 days</small>
+                </td>
+                <td>
+                    <div th:text="${referral.assignedDepartment != null ? referral.assignedDepartment.name : 'No department'}">No department</div>
+                    <small th:text="${referral.assignedDoctor != null ? referral.assignedDoctor.fullName : 'No doctor'}">No doctor</small>
+                </td>
+                <td th:text="${#temporals.format(referral.updatedAt, 'yyyy-MM-dd HH:mm')}">2026-04-22</td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
