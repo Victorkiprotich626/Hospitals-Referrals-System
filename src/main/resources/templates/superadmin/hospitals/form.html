@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${pageTitle})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: navbar('hospitals')}"></header>
+<main class="page-shell narrow-shell">
+    <section class="page-header">
+        <div>
+            <span class="eyebrow">Tenant Management</span>
+            <h1 th:text="${pageTitle}">Hospital</h1>
+            <p>Create or update the tenant profile used across the platform.</p>
+        </div>
+    </section>
+
+    <form th:action="@{${formAction}}" th:object="${hospitalForm}" method="post" class="card stacked-form">
+        <div th:if="${#fields.hasGlobalErrors()}" class="alert alert-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></div>
+
+        <label>
+            Hospital name
+            <input type="text" th:field="*{name}" placeholder="Riverdale General Hospital">
+            <small class="field-error" th:errors="*{name}"></small>
+        </label>
+
+        <label>
+            Hospital code
+            <input type="text" th:field="*{code}" placeholder="RGH">
+            <small class="field-error" th:errors="*{code}"></small>
+        </label>
+
+        <label>
+            Contact email
+            <input type="email" th:field="*{contactEmail}" placeholder="admin@hospital.org">
+            <small class="field-error" th:errors="*{contactEmail}"></small>
+        </label>
