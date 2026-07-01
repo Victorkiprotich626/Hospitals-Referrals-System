@@ -31,3 +31,58 @@
             <strong th:text="${report.outgoingReferrals}">0</strong>
         </article>
         <article class="stat-card">
+            <span>Assigned referrals</span>
+            <strong th:text="${report.assignedReferrals}">0</strong>
+        </article>
+        <article class="stat-card">
+            <span>Patients in tenant</span>
+            <strong th:text="${report.patientCount}">0</strong>
+        </article>
+    </section>
+
+    <section class="detail-grid">
+        <article class="card detail-card">
+            <h2>Status breakdown</h2>
+            <table class="data-table compact-table">
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${report.statusCounts}">
+                    <td th:text="${entry.key.displayName}">Submitted</td>
+                    <td th:text="${entry.value}">0</td>
+                </tr>
+                <tr th:if="${#maps.isEmpty(report.statusCounts)}">
+                    <td colspan="2" class="empty-state">No referral data available.</td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+
+        <article class="card detail-card">
+            <h2>Priority breakdown</h2>
+            <table class="data-table compact-table">
+                <thead>
+                <tr>
+                    <th>Priority</th>
+                    <th>Count</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${report.priorityCounts}">
+                    <td th:text="${entry.key.displayName}">Normal</td>
+                    <td th:text="${entry.value}">0</td>
+                </tr>
+                <tr th:if="${#maps.isEmpty(report.priorityCounts)}">
+                    <td colspan="2" class="empty-state">No referral data available.</td>
+                </tr>
+                </tbody>
+            </table>
+        </article>
+    </section>
+</main>
+</body>
+</html>
