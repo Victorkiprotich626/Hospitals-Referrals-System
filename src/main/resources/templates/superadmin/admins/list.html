@@ -27,3 +27,41 @@
             </div>
         </form>
     </section>
+
+    <section class="card">
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Hospital</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:if="${#lists.isEmpty(admins)}">
+                <td colspan="5" class="empty-state">No hospital administrators have been created yet.</td>
+            </tr>
+            <tr th:each="admin : ${admins}">
+                <td th:text="${admin.fullName}">Admin User</td>
+                <td th:text="${admin.email}">email@example.com</td>
+                <td th:text="${admin.hospital != null ? admin.hospital.name : 'Unassigned'}">Hospital</td>
+                <td>
+                    <span class="status-pill" th:classappend="${admin.enabled ? ' status-active' : ' status-inactive'}"
+                          th:text="${admin.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                </td>
+                <td class="actions">
+                    <a th:href="@{|/super-admin/admins/${admin.id}/edit|}">Edit</a>
+                    <form th:action="@{|/super-admin/admins/${admin.id}/delete|}" method="post" class="inline-form">
+                        <button type="submit" class="link-button danger-link"
+                                onclick="return confirm('Delete this hospital admin?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+</body>
+</html>
