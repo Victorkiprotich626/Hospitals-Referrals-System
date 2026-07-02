@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1600"
+   height="900"
+   viewBox="0 0 1600 900"
+   fill="none"
+   version="1.1"
+   id="svg24"
+   sodipodi:docname="login-page.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview24"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="0.529375"
+     inkscape:cx="800"
+     inkscape:cy="450.53129"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg24" />
+  <defs
+     id="defs4">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1600"
+       y2="900"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#EAF7F4"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#F8F2E8"
+         id="stop2" />
+    </linearGradient>
+    <linearGradient
+       id="panel"
+       x1="0"
+       y1="0"
+       x2="1"
+       y2="1">
+      <stop
+         stop-color="#0E6B68"
+         id="stop3" />
+      <stop
+         offset="1"
+         stop-color="#144C62"
+         id="stop4" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="18"
+         stdDeviation="24"
+         flood-color="#113C4A"
+         flood-opacity=".16" />
+    </filter>
+  </defs>
+  <rect
+     width="1600"
+     height="900"
+     fill="url(#bg)"
+     id="rect4" />
+  <rect
+     x="80"
+     y="70"
+     width="1440"
+     height="760"
+     rx="36"
+     fill="#FCFBF8"
+     filter="url(#shadow)"
+     id="rect5" />
+  <text
+     x="185"
+     y="455"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="22"
+     fill="#F8FCFB"
+     font-weight="700"
+     id="text9">Centralized referral coordination</text>
+  <text
+     x="185"
+     y="601"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="22"
+     fill="#F8FCFB"
+     font-weight="700"
+     id="text12">Role-based workspaces</text>
+  <text
+     x="583.54193"
+     y="210"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="18px"
+     fill="#0e6b68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text15"><tspan
+       sodipodi:role="line"
+       id="tspan24"
+       x="583.54193"
+       y="210">LOGIN PAGE</tspan><tspan
+       sodipodi:role="line"
+       id="tspan25"
+       x="583.54193"
+       y="232.5" /></text>
+  <text
+     x="458.86658"
+     y="324.00235"
+     font-family="Georgia, serif"
+     font-size="56px"
+     fill="#16323c"
+     font-weight="700"
+     id="text16">Sign in to continue</text>
+  <text
+     x="780"
+     y="336"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="24px"
+     fill="#5d6c73"
+     id="text17" />
+  <text
+     x="538.20544"
+     y="401.6647"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#4c5d64"
+     font-weight="600"
+     id="text18">Email address</text>
+  <rect
+     x="523.09326"
+     y="412.10864"
+     width="550"
+     height="72"
+     rx="18"
+     fill="#ffffff"
+     stroke="#d8e2e4"
+     id="rect18" />
+  <text
+     x="560.76031"
+     y="451.44153"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="22px"
+     fill="#8a979b"
+     id="text19">name@hospital.org</text>
+  <text
+     x="543.87244"
+     y="554.33295"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#4c5d64"
+     font-weight="600"
+     id="text20">Password</text>
+  <rect
+     x="526.87128"
+     y="574.22192"
+     width="550"
+     height="72"
+     rx="18"
+     fill="#ffffff"
+     stroke="#d8e2e4"
+     id="rect20" />
+  <text
+     x="566.42737"
+     y="621.11102"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="22px"
+     fill="#8a979b"
+     id="text21">••••••••••••</text>
+  <rect
+     x="780"
+     y="684"
+     width="26"
+     height="26"
+     rx="7"
+     fill="#FFFFFF"
+     stroke="#CAD7D8"
+     id="rect21" />
+  <text
+     x="799.33179"
+     y="663.44153"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#4d5d64"
+     id="text22" />
+  <rect
+     x="519.31519"
+     y="704.21954"
+     width="550"
+     height="78"
+     rx="22"
+     fill="#0e6b68"
+     id="rect22" />
+  <text
+     x="733.86658"
+     y="751.33057"
+     text-anchor="middle"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="25px"
+     fill="#f9fcfb"
+     font-weight="700"
+     id="text23">Sign in</text>
+</svg>
