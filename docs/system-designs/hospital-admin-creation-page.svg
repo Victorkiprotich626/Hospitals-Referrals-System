@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1600"
+   height="900"
+   viewBox="0 0 1600 900"
+   fill="none"
+   version="1.1"
+   id="svg22"
+   sodipodi:docname="hospital-admin-creation-page.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview22"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.60333333"
+     inkscape:cx="735.08287"
+     inkscape:cy="450"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg22" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1600"
+       y2="900"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#EEF7F4"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#FBF5EB"
+         id="stop2" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="14"
+         stdDeviation="22"
+         flood-color="#0B3644"
+         flood-opacity=".12" />
+    </filter>
+  </defs>
+  <rect
+     width="1600"
+     height="900"
+     fill="url(#bg)"
+     id="rect2" />
+  <rect
+     x="122"
+     y="50"
+     width="1356"
+     height="800"
+     rx="34"
+     fill="#fcfbf8"
+     filter="url(#shadow)"
+     id="rect3"
+     transform="matrix(1,0,0,1.0538674,0,-2.6933702)" />
+  <text
+     x="174"
+     y="126"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="18px"
+     fill="#0e6b68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text3">SUPER ADMIN</text>
+  <text
+     x="174"
+     y="198"
+     font-family="Georgia, serif"
+     font-size="56"
+     fill="#18333B"
+     font-weight="700"
+     id="text4">Create hospital admin</text>
+  <rect
+     x="174.04927"
+     y="251.24265"
+     width="559.90143"
+     height="627.63623"
+     rx="29.994722"
+     fill="#ffffff"
+     stroke="#e6ecea"
+     id="rect5"
+     style="stroke-width:1.09853" />
+  <text
+     x="205.66824"
+     y="723.11963"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#55676c"
+     font-weight="600"
+     id="text11-2">Create password</text>
+  <rect
+     x="203.1505"
+     y="743.89642"
+     width="492.0802"
+     height="54.135464"
+     rx="18.002935"
+     fill="#ffffff"
+     stroke="#dce5e4"
+     id="rect11-8"
+     style="stroke-width:0.919785" />
+  <text
+     x="214.56975"
+     y="775.83234"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#87949a"
+     id="text12-5">password</text>
+  <text
+     x="203.02762"
+     y="302.85083"
