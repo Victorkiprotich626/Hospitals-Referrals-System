@@ -32,3 +32,29 @@
             <input type="email" th:field="*{contactEmail}" placeholder="admin@hospital.org">
             <small class="field-error" th:errors="*{contactEmail}"></small>
         </label>
+
+        <label>
+            Contact phone
+            <input type="text" th:field="*{contactPhone}" placeholder="+254700000000">
+            <small class="field-error" th:errors="*{contactPhone}"></small>
+        </label>
+
+        <label>
+            Address
+            <textarea th:field="*{address}" rows="3" placeholder="Physical address"></textarea>
+            <small class="field-error" th:errors="*{address}"></small>
+        </label>
+
+        <label class="checkbox-row">
+            <input type="checkbox" th:field="*{enabled}">
+            <span>Hospital is active</span>
+        </label>
+
+        <div class="form-actions">
+            <a class="secondary-button" th:href="@{/super-admin/hospitals}">Cancel</a>
+            <button type="submit" class="primary-button">Save hospital</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
