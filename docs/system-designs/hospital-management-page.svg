@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1600"
+   height="900"
+   viewBox="0 0 1600 900"
+   fill="none"
+   version="1.1"
+   id="svg33"
+   sodipodi:docname="hospital-management-page.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview33"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.60333333"
+     inkscape:cx="799.72376"
+     inkscape:cy="450"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg33" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1600"
+       y2="900"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#EEF7F4"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#FBF5EB"
+         id="stop2" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="14"
+         stdDeviation="22"
+         flood-color="#0B3644"
+         flood-opacity=".12" />
+    </filter>
+  </defs>
+  <rect
+     width="1600"
+     height="900"
+     fill="url(#bg)"
+     id="rect2" />
+  <rect
+     x="48"
+     y="38"
+     width="1504"
+     height="824"
+     rx="34"
+     fill="#FCFBF8"
+     filter="url(#shadow)"
+     id="rect3" />
+  <text
+     x="96"
+     y="110"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="18px"
+     fill="#0e6b68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text3">SUPER ADMIN MANAGEMENT</text>
+  <text
+     x="96"
+     y="182"
+     font-family="Georgia, serif"
+     font-size="58"
+     fill="#18333B"
+     font-weight="700"
+     id="text4">Hospital management</text>
+  <rect
+     x="1264"
+     y="122"
+     width="198"
+     height="84"
+     rx="24"
+     fill="#0E6B68"
+     id="rect5" />
+  <text
+     x="1363"
+     y="173"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="24"
+     fill="#FFFFFF"
+     font-weight="700"
+     id="text6">Add hospital</text>
+  <rect
+     x="96"
+     y="266"
+     width="1360"
+     height="122"
+     rx="28"
+     fill="#FAFBFA"
+     stroke="#E3EBE8"
+     id="rect6" />
+  <text
+     x="128"
+     y="316"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#4F6166"
+     font-weight="700"
+     id="text7">Search hospitals</text>
+  <rect
+     x="128"
+     y="334"
+     width="650"
+     height="56"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect7" />
+  <text
+     x="156"
+     y="370"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#87949A"
+     id="text8">Search by hospital name, code, location, or admin</text>
+  <rect
+     x="800"
+     y="334"
+     width="240"
+     height="56"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect8" />
+  <text
+     x="830"
+     y="370"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#87949A"
+     id="text9">Status filter</text>
+  <rect
+     x="1060"
+     y="334"
+     width="160"
+     height="56"
+     rx="18"
+     fill="#0E6B68"
+     id="rect9" />
+  <text
+     x="1140"
+     y="370"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#FFFFFF"
+     font-weight="700"
+     id="text10">Apply</text>
+  <rect
+     x="1240"
+     y="334"
+     width="160"
+     height="56"
+     rx="18"
+     fill="#F4F7F6"
+     stroke="#DCE5E4"
+     id="rect10" />
+  <text
+     x="1320"
+     y="370"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#18333B"
+     font-weight="700"
+     id="text11">Clear</text>
+  <rect
+     x="96"
+     y="430"
+     width="1360"
+     height="346"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect11" />
+  <text
+     x="126"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text12">HOSPITAL</text>
+  <text
+     x="454"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text13">LOCATION</text>
+  <text
+     x="660"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text14">ADMIN</text>
+  <text
+     x="934"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text15">REFERRALS</text>
+  <text
+     x="1100"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text16">STATUS</text>
+  <text
+     x="1270"
+     y="478"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text17">ACTIONS</text>
+  <line
+     x1="126"
+     y1="496"
+     x2="1426"
+     y2="496"
+     stroke="#E5EBEA"
+     id="line17" />
+  <text
+     x="126"
+     y="560"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="24"
+     fill="#183740"
+     font-weight="700"
+     id="text18">Kenyatta National Hospital</text>
+  <text
+     x="126"
+     y="592"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#6C7D82"
+     id="text19">Code: KNH</text>
+  <text
+     x="454"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text20">Nairobi</text>
+  <text
+     x="660"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text21">Mary Wanjiru</text>
+  <text
+     x="934"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text22">412 total</text>
+  <rect
+     x="1090"
+     y="554"
+     width="92"
+     height="34"
+     rx="17"
+     fill="#E8F7F2"
+     id="rect22" />
+  <text
+     x="1136"
+     y="576"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text23">Active</text>
+  <text
+     x="1270"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text24">Edit</text>
+  <text
+     x="1336"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#18333B"
+     font-weight="700"
+     id="text25">View</text>
+  <line
+     x1="126"
+     y1="628"
+     x2="1426"
+     y2="628"
+     stroke="#E5EBEA"
+     id="line25" />
+  <text
+     x="126"
+     y="692"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="24"
+     fill="#183740"
+     font-weight="700"
+     id="text26">Kapsabet County Referral Hospital</text>
+  <text
+     x="126"
+     y="724"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#6C7D82"
+     id="text27">Code: KCRH</text>
+  <text
+     x="454"
+     y="708"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text28">Nandi</text>
+  <text
+     x="660"
+     y="708"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text29">James Kiptoo</text>
+  <text
+     x="934"
+     y="708"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text30">189 total</text>
+  <rect
+     x="1084"
+     y="686"
+     width="106"
+     height="34"
+     rx="17"
+     fill="#FFF0CF"
+     id="rect30" />
+  <text
+     x="1137"
+     y="708"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#9A6A00"
+     font-weight="700"
+     id="text31">Pending</text>
+  <text
+     x="1270"
+     y="708"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text32">Edit</text>
+  <text
+     x="1336"
+     y="708"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#18333B"
+     font-weight="700"
+     id="text33">View</text>
+</svg>
