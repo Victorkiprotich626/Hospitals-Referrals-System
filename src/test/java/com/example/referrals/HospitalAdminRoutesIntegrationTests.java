@@ -378,3 +378,361 @@ class HospitalAdminRoutesIntegrationTests {
         other.setSubject("Orthopedic consult");
         other.setReferralReason("Knee pain");
         referralRepository.save(other);
+
+        mockMvc.perform(get("/hospital-admin/referrals").with(hospitalAdmin()).param("q", "Cardiology"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("REF-CARD-001")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("REF-ORTHO-001"))));
+    }
+
+    @Test
+    void hospitalAdminReferralDetailSupportsJourneyTimelineFiltering() throws Exception {
+        Referral referral = createReferral("REF-TIME-001", "JRNY-TIME-001", ReferralStatus.RECEIVED);
+
+        ReferralEvent created = new ReferralEvent();
+        created.setReferral(referral);
+        created.setEventType(ReferralEventType.CREATED);
+        created.setActorName("Grace Njeri");
+        created.setActorHospitalName(hospital.getName());
+        created.setActorRoleName("Referral Officer");
+        created.setDetails("Referral submitted to Beta Hospital.");
+        referralEventRepository.save(created);
+
+        ReferralEvent statusChanged = new ReferralEvent();
+        statusChanged.setReferral(referral);
+        statusChanged.setEventType(ReferralEventType.STATUS_CHANGED);
+        statusChanged.setPreviousStatus(ReferralStatus.SUBMITTED);
+        statusChanged.setNewStatus(ReferralStatus.RECEIVED);
+        statusChanged.setActorName("Brian Otieno");
+        statusChanged.setActorHospitalName(receivingHospital.getName());
+        statusChanged.setActorRoleName("Hospital Admin");
+        statusChanged.setDetails("Referral acknowledged by receiving hospital.");
+        referralEventRepository.save(statusChanged);
+
+        mockMvc.perform(get("/hospital-admin/referrals/" + referral.getId())
+                .with(hospitalAdmin())
+                .param("timelineScope", "journey")
+                .param("eventType", "STATUS_CHANGED"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("hospitaladmin/referrals/detail"))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Submitted -&gt; Received")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Referral acknowledged by receiving hospital.")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Referral submitted to Beta Hospital."))));
+    }
+
+    @Test
+    void invalidTimelineEventTypeFallsBackGracefully() throws Exception {
+        Referral referral = createReferral("REF-TIME-002", "JRNY-TIME-002", ReferralStatus.SUBMITTED);
+
+        mockMvc.perform(get("/hospital-admin/referrals/" + referral.getId())
+                .with(hospitalAdmin())
+                .param("eventType", "NOT_A_REAL_TYPE"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("hospitaladmin/referrals/detail"));
+    }
+
+    @Test
+    void hospitalAdminReferralDetailShowsAttachmentMetadata() throws Exception {
+        Referral referral = createReferral("REF-ATT-001", "JRNY-ATT-001", ReferralStatus.SUBMITTED);
+
+        ReferralAttachment attachment = new ReferralAttachment();
+        attachment.setReferral(referral);
+        attachment.setOriginalFileName("blood-work.pdf");
+        attachment.setStoredFileName("referral-1/blood-work.pdf");
+        attachment.setAttachmentType(ReferralAttachmentType.LAB_RESULT);
+        attachment.setContentType("application/pdf");
+        attachment.setFileSize(2048);
+        attachment.setNote("Baseline blood chemistry panel");
+        attachment.setUploadedByName("Grace Njeri");
+        attachment.setUploadedByRoleName("Referral Officer");
+        attachmentRepository.save(attachment);
+
+        mockMvc.perform(get("/hospital-admin/referrals/" + referral.getId()).with(hospitalAdmin()))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("blood-work.pdf")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Lab Result")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Baseline blood chemistry panel")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Referral Officer")));
+    }
+
+    @Test
+    void hospitalAdminReferralDetailShowsClosureOutcome() throws Exception {
+        Referral referral = createIncomingReferral("REF-CLOSE-001", "JRNY-CLOSE-001", ReferralStatus.COMPLETED);
+        referral.setClosureOutcome(ReferralClosureOutcome.ADMITTED);
+        referral.setClosureSummary("Patient admitted for observation and continued treatment.");
+        referralRepository.save(referral);
+
+        mockMvc.perform(get("/hospital-admin/referrals/" + referral.getId()).with(hospitalAdmin()))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Admitted")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Patient admitted for observation and continued treatment.")));
+    }
+
+    @Test
+    void closingReferralRequiresFinalOutcome() throws Exception {
+        Referral referral = createIncomingReferral("REF-CLOSE-002", "JRNY-CLOSE-002", ReferralStatus.ACCEPTED);
+
+        mockMvc.perform(post("/hospital-admin/referrals/" + referral.getId() + "/status")
+                .with(hospitalAdmin())
+                .with(csrf())
+                .param("status", "COMPLETED")
+                .param("note", "Clinical work finished"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/hospital-admin/referrals/" + referral.getId()));
+
+        Referral reloaded = referralRepository.findById(referral.getId()).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(ReferralStatus.COMPLETED, reloaded.getStatus());
+        org.junit.jupiter.api.Assertions.assertEquals(ReferralClosureOutcome.TREATED, reloaded.getClosureOutcome());
+    }
+
+    @Test
+    void closingReferralPersistsAllowedFinalOutcome() throws Exception {
+        Referral referral = createIncomingReferral("REF-CLOSE-003", "JRNY-CLOSE-003", ReferralStatus.ACCEPTED);
+
+        mockMvc.perform(post("/hospital-admin/referrals/" + referral.getId() + "/status")
+                .with(hospitalAdmin())
+                .with(csrf())
+                .param("status", "COMPLETED")
+                .param("closureOutcome", "ADMITTED")
+                .param("closureSummary", "Admitted under internal medicine for further care.")
+                .param("note", "Accepted case has now been admitted"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/hospital-admin/referrals/" + referral.getId()));
+
+        Referral reloaded = referralRepository.findById(referral.getId()).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(ReferralStatus.COMPLETED, reloaded.getStatus());
+        org.junit.jupiter.api.Assertions.assertEquals(ReferralClosureOutcome.ADMITTED, reloaded.getClosureOutcome());
+    }
+
+    @Test
+    void closedReferralOutcomeCanBeUpdatedAndAppearsInTimeline() throws Exception {
+        Referral referral = createIncomingReferral("REF-CLOSE-004", "JRNY-CLOSE-004", ReferralStatus.COMPLETED);
+        referral.setClosureOutcome(ReferralClosureOutcome.TREATED);
+        referral.setClosureSummary("Patient initially discharged after treatment.");
+        referral = referralRepository.save(referral);
+
+        mockMvc.perform(post("/hospital-admin/referrals/" + referral.getId() + "/closure")
+                .with(hospitalAdmin())
+                .with(csrf())
+                .param("closureOutcome", "ADMITTED")
+                .param("closureSummary", "Patient admitted for continued inpatient care."))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/hospital-admin/referrals/" + referral.getId()));
+
+        Referral reloaded = referralRepository.findById(referral.getId()).orElseThrow();
+        org.junit.jupiter.api.Assertions.assertEquals(ReferralClosureOutcome.ADMITTED, reloaded.getClosureOutcome());
+
+        mockMvc.perform(get("/hospital-admin/referrals/" + referral.getId()).with(hospitalAdmin()))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Outcome Updated")))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Patient admitted for continued inpatient care.")));
+    }
+
+    @Test
+    void outgoingReferralQueueShowsAwaitingResponseInsteadOfOverdue() throws Exception {
+        Patient patient = new Patient();
+        patient.setHospital(hospital);
+        patient.setPatientNumber("PAT-AWAITING-001");
+        patient.setFirstName("Awaiting");
+        patient.setLastName("Response");
+        patient.setGender(Gender.FEMALE);
+        patient.setDateOfBirth(java.time.LocalDate.of(1990, 1, 1));
+        patient = patientRepository.save(patient);
+
+        Referral referral = new Referral();
+        referral.setReferenceNumber("REF-AWAITING-001");
+        referral.setJourneyCode("JRNY-AWAITING-001");
+        referral.setPatient(patient);
+        referral.setFromHospital(hospital);
+        referral.setToHospital(receivingHospital);
+        referral.setStatus(ReferralStatus.SUBMITTED);
+        referral.setPriority(ReferralPriority.URGENT);
+        referral.setSubject("Awaiting response test");
+        referral.setReferralReason("Response tracking");
+        referralRepository.save(referral);
+
+        mockMvc.perform(get("/hospital-admin/referrals").with(hospitalAdmin()))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Awaiting response")));
+    }
+
+    @Test
+    void hospitalAdminCanDeleteAttachment() throws Exception {
+        Referral referral = createReferral("REF-ATT-002", "JRNY-ATT-002", ReferralStatus.SUBMITTED);
+
+        ReferralAttachment attachment = new ReferralAttachment();
+        attachment.setReferral(referral);
+        attachment.setOriginalFileName("scan.pdf");
+        attachment.setStoredFileName("referral-" + referral.getId() + "/scan.pdf");
+        attachment.setAttachmentType(ReferralAttachmentType.IMAGING);
+        attachment.setContentType("application/pdf");
+        attachment.setFileSize(1024);
+        attachment.setUploadedByName("Grace Njeri");
+        attachment.setUploadedByRoleName("Referral Officer");
+        attachmentRepository.save(attachment);
+
+        mockMvc.perform(post("/hospital-admin/referrals/" + referral.getId() + "/attachments/" + attachment.getId() + "/delete")
+                .with(hospitalAdmin())
+                .with(csrf()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/hospital-admin/referrals/" + referral.getId()));
+    }
+
+    @Test
+    void notificationsPageShowsOnlyHospitalAdminNavigation() throws Exception {
+        mockMvc.perform(get("/notifications").with(hospitalAdmin()))
+            .andExpect(status().isOk())
+            .andExpect(view().name("notifications/list"))
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("Hospital admin workspace")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Multi-tenant platform"))))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Referral officer workspace"))))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Doctor workspace"))))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("Viewer workspace"))));
+    }
+
+    @Test
+    void userSearchFiltersList() throws Exception {
+        AppUser referralOfficer = new AppUser();
+        referralOfficer.setHospital(hospital);
+        referralOfficer.setFirstName("Grace");
+        referralOfficer.setLastName("Njeri");
+        referralOfficer.setEmail("grace@alpha.test");
+        referralOfficer.setPasswordHash("hash");
+        referralOfficer.setEnabled(true);
+        referralOfficer.setRoles(java.util.Set.of(com.example.referrals.common.model.RoleName.REFERRAL_OFFICER));
+        userRepository.save(referralOfficer);
+
+        AppUser viewer = new AppUser();
+        viewer.setHospital(hospital);
+        viewer.setFirstName("Victor");
+        viewer.setLastName("Mwangi");
+        viewer.setEmail("victor@alpha.test");
+        viewer.setPasswordHash("hash");
+        viewer.setEnabled(true);
+        viewer.setRoles(java.util.Set.of(com.example.referrals.common.model.RoleName.VIEWER));
+        userRepository.save(viewer);
+
+        mockMvc.perform(get("/hospital-admin/users").with(hospitalAdmin()).param("q", "Grace"))
+            .andExpect(status().isOk())
+            .andExpect(content().string(org.hamcrest.Matchers.containsString("grace@alpha.test")))
+            .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("victor@alpha.test"))));
+    }
+
+    private RequestPostProcessor hospitalAdmin() {
+        CustomUserDetails principal = new CustomUserDetails(
+            100L,
+            hospital.getId(),
+            null,
+            null,
+            "Hospital Admin",
+            "admin@alpha.test",
+            "password",
+            true,
+            true,
+            AuthorityUtils.createAuthorityList("ROLE_HOSPITAL_ADMIN")
+        );
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        return authentication(authentication);
+    }
+
+    private RequestPostProcessor superAdmin() {
+        CustomUserDetails principal = new CustomUserDetails(
+            99L,
+            null,
+            null,
+            null,
+            "Super Admin",
+            "superadmin@referrals.local",
+            "password",
+            true,
+            true,
+            AuthorityUtils.createAuthorityList("ROLE_SUPER_ADMIN")
+        );
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        return authentication(authentication);
+    }
+
+    private RequestPostProcessor referralOfficer() {
+        CustomUserDetails principal = new CustomUserDetails(
+            101L,
+            hospital.getId(),
+            null,
+            null,
+            "Referral Officer",
+            "officer@alpha.test",
+            "password",
+            true,
+            true,
+            AuthorityUtils.createAuthorityList("ROLE_REFERRAL_OFFICER")
+        );
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        return authentication(authentication);
+    }
+
+    private RequestPostProcessor viewer() {
+        CustomUserDetails principal = new CustomUserDetails(
+            102L,
+            hospital.getId(),
+            null,
+            null,
+            "Viewer User",
+            "viewer@alpha.test",
+            "password",
+            true,
+            true,
+            AuthorityUtils.createAuthorityList("ROLE_VIEWER")
+        );
+        UsernamePasswordAuthenticationToken authentication =
+            new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
+        return authentication(authentication);
+    }
+
+    private Referral createReferral(String referenceNumber, String journeyCode, ReferralStatus status) {
+        Patient patient = new Patient();
+        patient.setHospital(hospital);
+        patient.setPatientNumber("PAT-" + referenceNumber);
+        patient.setFirstName("Timeline");
+        patient.setLastName("Patient");
+        patient.setGender(Gender.FEMALE);
+        patient.setDateOfBirth(java.time.LocalDate.of(1995, 6, 14));
+        patient = patientRepository.save(patient);
+
+        Referral referral = new Referral();
+        referral.setReferenceNumber(referenceNumber);
+        referral.setJourneyCode(journeyCode);
+        referral.setPatient(patient);
+        referral.setFromHospital(hospital);
+        referral.setToHospital(receivingHospital);
+        referral.setStatus(status);
+        referral.setPriority(ReferralPriority.NORMAL);
+        referral.setSubject("Timeline referral");
+        referral.setReferralReason("Timeline testing");
+        return referralRepository.save(referral);
+    }
+
+    private Referral createIncomingReferral(String referenceNumber, String journeyCode, ReferralStatus status) {
+        Patient patient = new Patient();
+        patient.setHospital(hospital);
+        patient.setPatientNumber("PAT-" + referenceNumber);
+        patient.setFirstName("Incoming");
+        patient.setLastName("Patient");
+        patient.setGender(Gender.FEMALE);
+        patient.setDateOfBirth(java.time.LocalDate.of(1992, 4, 18));
+        patient = patientRepository.save(patient);
+
+        Referral referral = new Referral();
+        referral.setReferenceNumber(referenceNumber);
+        referral.setJourneyCode(journeyCode);
+        referral.setPatient(patient);
+        referral.setFromHospital(receivingHospital);
+        referral.setToHospital(hospital);
+        referral.setStatus(status);
+        referral.setPriority(ReferralPriority.HIGH);
+        referral.setSubject("Incoming referral");
+        referral.setReferralReason("Incoming referral testing");
+        return referralRepository.save(referral);
+    }
+}
