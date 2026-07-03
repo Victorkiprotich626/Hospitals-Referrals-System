@@ -211,3 +211,125 @@
   <text
      x="1238"
      y="474"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#738489"
+     font-weight="700"
+     id="text14">ACTION</text>
+  <line
+     x1="138"
+     y1="494"
+     x2="1398"
+     y2="494"
+     stroke="#E5EBEA"
+     id="line14" />
+  <text
+     x="138"
+     y="560"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="24"
+     fill="#183740"
+     font-weight="700"
+     id="text15">Dr. Kraft Wangu</text>
+  <text
+     x="138"
+     y="592"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#6C7D82"
+     id="text16">Cardiology specialist</text>
+  <text
+     x="448"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text17">Cardiology</text>
+  <text
+     x="714"
+     y="560"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text18">kraft@hospital.org</text>
+  <text
+     x="714"
+     y="590"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text19">0701 300 700</text>
+  <text
+     x="972"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text20">5 active</text>
+  <text
+     x="1238"
+     y="576"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text21">Edit</text>
+  <line
+     x1="138"
+     y1="622"
+     x2="1398"
+     y2="622"
+     stroke="#E5EBEA"
+     id="line21" />
+  <text
+     x="138"
+     y="688"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="24"
+     fill="#183740"
+     font-weight="700"
+     id="text22">Dr. Amina Otieno</text>
+  <text
+     x="138"
+     y="720"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#6C7D82"
+     id="text23">General medicine</text>
+  <text
+     x="448"
+     y="704"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text24">General</text>
+  <text
+     x="714"
+     y="688"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text25">amina@hospital.org</text>
+  <text
+     x="714"
+     y="718"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text26">0722 445 677</text>
+  <text
+     x="972"
+     y="704"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#6C7D82"
+     id="text27">3 active</text>
+  <text
+     x="1238"
+     y="704"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text28">Edit</text>
+</svg>
