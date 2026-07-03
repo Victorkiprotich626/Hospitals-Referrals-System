@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1600"
+   height="900"
+   viewBox="0 0 1600 900"
+   fill="none"
+   version="1.1"
+   id="svg23"
+   sodipodi:docname="referral-creation-form.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview23"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.60333333"
+     inkscape:cx="799.72376"
+     inkscape:cy="450"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg23" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1600"
+       y2="900"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#EEF7F4"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#FBF5EB"
+         id="stop2" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="14"
+         stdDeviation="22"
+         flood-color="#0B3644"
+         flood-opacity=".12" />
+    </filter>
+  </defs>
+  <rect
+     width="1600"
+     height="900"
+     fill="url(#bg)"
+     id="rect2" />
+  <rect
+     x="70"
+     y="44"
+     width="1460"
+     height="812"
+     rx="34"
+     fill="#FCFBF8"
+     filter="url(#shadow)"
+     id="rect3" />
+  <text
+     x="118"
+     y="116"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="18px"
+     fill="#0e6b68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text3">REFERRAL FORM</text>
+  <text
+     x="118"
+     y="188"
+     font-family="Georgia, serif"
+     font-size="58"
+     fill="#18333B"
+     font-weight="700"
+     id="text4">Create referral</text>
+  <rect
+     x="118"
+     y="270"
+     width="640"
+     height="510"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect5" />
+  <rect
+     x="788"
+     y="270"
+     width="624"
+     height="510"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect6" />
+  <text
+     x="152"
+     y="320"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#0E6B68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text6">PATIENT AND DESTINATION</text>
+  <text
+     x="152"
+     y="374"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text7">Patient</text>
+  <rect
+     x="152"
+     y="392"
+     width="572"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect7" />
+  <text
+     x="180"
+     y="430"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="20px"
+     fill="#87949a"
+     id="text8">Search or select patient</text>
+  <text
+     x="152"
+     y="484"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text9">Destination hospital</text>
+  <rect
+     x="152"
+     y="502"
+     width="572"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect9" />
+  <text
+     x="180"
+     y="540"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#87949A"
+     id="text10">Choose receiving hospital</text>
+  <text
+     x="152"
+     y="594"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text11">Priority</text>
+  <rect
+     x="152"
+     y="612"
+     width="572"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect11" />
+  <text
+     x="180"
+     y="650"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#87949A"
+     id="text12">Low, Normal, High, or Urgent</text>
+  <text
+     x="152"
+     y="704"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text13">Subject / reason for referral</text>
+  <rect
+     x="152"
+     y="722"
+     width="572"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect13" />
+  <text
+     x="180"
+     y="760"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#87949A"
+     id="text14">Enter referral subject</text>
+  <text
+     x="822"
+     y="320"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#0E6B68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text15">CLINICAL DETAILS</text>
+  <text
+     x="822"
+     y="374"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text16">Clinical notes</text>
+  <rect
+     x="822"
+     y="392"
+     width="556"
+     height="142"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DCE5E4"
+     id="rect16" />
+  <text
+     x="850"
+     y="470"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#87949A"
+     id="text17">Presenting problem, diagnosis, and reason for referral</text>
+  <text
+     x="822"
+     y="572"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#55676C"
+     font-weight="600"
+     id="text18">Attachment summary</text>
+  <rect
+     x="822"
+     y="590"
+     width="556"
+     height="62"
+     rx="18"
+     fill="#F5F8F7"
+     stroke="#DCE5E4"
+     id="rect18" />
+  <text
+     x="850"
+     y="628"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#87949A"
+     id="text19">Referral letter, lab result, imaging, discharge note</text>
+  <rect
+     x="118"
+     y="802"
+     width="220"
+     height="56"
+     rx="18"
+     fill="#0E6B68"
+     id="rect21" />
+  <text
+     x="228"
+     y="838"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#FFFFFF"
+     font-weight="700"
+     id="text22">Submit referral</text>
+  <rect
+     x="356"
+     y="802"
+     width="160"
+     height="56"
+     rx="18"
+     fill="#F4F7F6"
+     stroke="#DCE5E4"
+     id="rect22" />
+  <text
+     x="436"
+     y="838"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#18333B"
+     font-weight="700"
+     id="text23">Cancel</text>
+</svg>
