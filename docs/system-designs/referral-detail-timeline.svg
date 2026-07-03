@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1600"
+   height="900"
+   viewBox="0 0 1600 900"
+   fill="none"
+   version="1.1"
+   id="svg35"
+   sodipodi:docname="referral-detail-timeline.svg"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview35"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.60333333"
+     inkscape:cx="950.55249"
+     inkscape:cy="450"
+     inkscape:window-width="1366"
+     inkscape:window-height="745"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg35" />
+  <defs
+     id="defs2">
+    <linearGradient
+       id="bg"
+       x1="0"
+       y1="0"
+       x2="1600"
+       y2="900"
+       gradientUnits="userSpaceOnUse">
+      <stop
+         stop-color="#EEF7F4"
+         id="stop1" />
+      <stop
+         offset="1"
+         stop-color="#FBF4EA"
+         id="stop2" />
+    </linearGradient>
+    <filter
+       id="shadow"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feDropShadow
+         dx="0"
+         dy="14"
+         stdDeviation="22"
+         flood-color="#0B3644"
+         flood-opacity=".12" />
+    </filter>
+  </defs>
+  <rect
+     width="1600"
+     height="900"
+     fill="url(#bg)"
+     id="rect2" />
+  <rect
+     x="44"
+     y="36"
+     width="1512"
+     height="828"
+     rx="34"
+     fill="#FCFBF8"
+     filter="url(#shadow)"
+     id="rect3" />
+  <text
+     x="96"
+     y="108"
+     font-family="'Segoe UI', Arial, sans-serif"
+     font-size="18px"
+     fill="#0e6b68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text3">REFERRAL DETAIL</text>
+  <text
+     x="96"
+     y="178"
+     font-family="Georgia, serif"
+     font-size="56"
+     fill="#18333B"
+     font-weight="700"
+     id="text4">Referral journey and timeline</text>
+  <rect
+     x="96"
+     y="252"
+     width="1400"
+     height="86"
+     rx="24"
+     fill="#FEF0E8"
+     stroke="#F6D5C4"
+     id="rect5" />
+  <text
+     x="126"
+     y="303"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="25"
+     fill="#B4543A"
+     font-weight="700"
+     id="text6">Overdue: urgent review needed for receiving hospital action</text>
+  <rect
+     x="96"
+     y="368"
+     width="430"
+     height="438"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect6" />
+  <rect
+     x="554"
+     y="368"
+     width="432"
+     height="438"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect7" />
+  <rect
+     x="1014"
+     y="368"
+     width="482"
+     height="438"
+     rx="30"
+     fill="#FFFFFF"
+     stroke="#E6ECEA"
+     id="rect8" />
+  <text
+     x="130"
+     y="416"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#0E6B68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text8">CASE SUMMARY</text>
+  <text
+     x="130"
+     y="458"
+     font-family="Georgia, serif"
+     font-size="34"
+     fill="#18333B"
+     font-weight="700"
+     id="text9">Baby Cutie Chemundu</text>
+  <text
+     x="130"
+     y="494"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#6C7D82"
+     id="text10">Patient no: PAT-KNH-00242</text>
+  <text
+     x="130"
+     y="530"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#6C7D82"
+     id="text11">Referral ref: REF-CHEMUNDU-20260424</text>
+  <text
+     x="130"
+     y="566"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#6C7D82"
+     id="text12">Journey ref: JRNY-CHEMUNDU-20260424</text>
+  <rect
+     x="130"
+     y="600"
+     width="120"
+     height="36"
+     rx="18"
+     fill="#E2F4F1"
+     id="rect12" />
+  <text
+     x="190"
+     y="623"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#0E6B68"
+     font-weight="700"
+     id="text13">Under review</text>
+  <rect
+     x="264"
+     y="600"
+     width="86"
+     height="36"
+     rx="18"
+     fill="#F8E7B9"
+     id="rect13" />
+  <text
+     x="307"
+     y="623"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#9A6A00"
+     font-weight="700"
+     id="text14">High</text>
+  <rect
+     x="364"
+     y="600"
+     width="92"
+     height="36"
+     rx="18"
+     fill="#FBE7DE"
+     id="rect14" />
+  <text
+     x="410"
+     y="623"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#C05A3C"
+     font-weight="700"
+     id="text15">Overdue</text>
+  <text
+     x="130"
+     y="684"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#68797E"
+     font-weight="700"
+     id="text16">Counterparty hospital</text>
+  <text
+     x="130"
+     y="714"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="21"
+     fill="#183740"
+     id="text17">Kenyatta National Hospital</text>
+  <text
+     x="130"
+     y="760"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#68797E"
+     font-weight="700"
+     id="text18">Assigned to</text>
+  <text
+     x="130"
+     y="790"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="21"
+     fill="#183740"
+     id="text19">General Department • Amina Otieno</text>
+  <text
+     x="588"
+     y="416"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#0E6B68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text20">WORKFLOW ACTIONS</text>
+  <text
+     x="588"
+     y="458"
+     font-family="Georgia, serif"
+     font-size="34px"
+     fill="#18333b"
+     font-weight="700"
+     id="text21">Update status</text>
+  <rect
+     x="588"
+     y="498"
+     width="364"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DDE6E4"
+     id="rect21" />
+  <text
+     x="618"
+     y="536"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#839298"
+     id="text22">Select next status</text>
+  <rect
+     x="588"
+     y="580"
+     width="364"
+     height="62"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DDE6E4"
+     id="rect22" />
+  <text
+     x="618"
+     y="618"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#839298"
+     id="text23">Final outcome (optional while open)</text>
+  <rect
+     x="588"
+     y="662"
+     width="364"
+     height="96"
+     rx="18"
+     fill="#FFFFFF"
+     stroke="#DDE6E4"
+     id="rect23" />
+  <text
+     x="618"
+     y="714"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#839298"
+     id="text24">Closure notes and clinical summary</text>
+  <rect
+     x="588"
+     y="776"
+     width="364"
+     height="54"
+     rx="18"
+     fill="#0E6B68"
+     id="rect24" />
+  <text
+     x="770"
+     y="812"
+     text-anchor="middle"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="20"
+     fill="#FFFFFF"
+     font-weight="700"
+     id="text25">Save status update</text>
+  <text
+     x="1048"
+     y="416"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="18"
+     fill="#0E6B68"
+     font-weight="700"
+     letter-spacing="3"
+     id="text26">TIMELINE</text>
+  <text
+     x="1048"
+     y="458"
+     font-family="Georgia, serif"
+     font-size="34"
+     fill="#18333B"
+     font-weight="700"
+     id="text27">Journey events</text>
+  <line
+     x1="1092"
+     y1="502"
+     x2="1092"
+     y2="770"
+     stroke="#C9DAD7"
+     stroke-width="4"
+     id="line27" />
+  <circle
+     cx="1092"
+     cy="534"
+     r="13"
+     fill="#0E6B68"
+     id="circle27" />
+  <circle
+     cx="1092"
+     cy="612"
+     r="13"
+     fill="#2E8E53"
+     id="circle28" />
+  <circle
+     cx="1092"
+     cy="690"
+     r="13"
+     fill="#C05A3C"
+     id="circle29" />
+  <rect
+     x="1128"
+     y="500"
+     width="320"
+     height="58"
+     rx="18"
+     fill="#F7FBFA"
+     id="rect29" />
+  <text
+     x="1150"
+     y="533"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#183740"
+     font-weight="700"
+     id="text29">Referral created</text>
+  <text
+     x="1150"
+     y="555"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#6F8085"
+     id="text30">Hospital A • Referral officer • 24 Apr 2026 07:31</text>
+  <rect
+     x="1128"
+     y="578"
+     width="320"
+     height="58"
+     rx="18"
+     fill="#F7FBFA"
+     id="rect30" />
+  <text
+     x="1150"
+     y="611"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#183740"
+     font-weight="700"
+     id="text31">Status changed: Submitted to Received</text>
+  <text
+     x="1150"
+     y="633"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#6F8085"
+     id="text32">Hospital B • Referral officer • 24 Apr 2026 09:12</text>
+  <rect
+     x="1128"
+     y="656"
+     width="320"
+     height="78"
+     rx="18"
+     fill="#F7FBFA"
+     id="rect32" />
+  <text
+     x="1150"
+     y="689"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="19"
+     fill="#183740"
+     font-weight="700"
+     id="text33">Outcome updated: Redirected</text>
+  <text
+     x="1150"
+     y="711"
+     font-family="Segoe UI, Arial, sans-serif"
+     font-size="16"
+     fill="#6F8085"
+     id="text34">Forwarded to Hospital C after specialist review</text>
+</svg>
