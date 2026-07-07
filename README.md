@@ -1,146 +1,310 @@
-# Hospital Referrals Management System
+# Hospital Referrals Management and Tracking System
 
-This repository contains the first increment of a multi-tenant hospital referrals management and tracking system built with Spring Boot, MySQL, and Thymeleaf.
+A multi-tenant hospital referrals management and tracking system built with Spring Boot, MySQL, Thymeleaf, Spring Security, and Flyway.
 
-## What is included in this increment
+The system helps hospitals create, receive, route, track, and close patient referrals across facilities. It supports role-based access, tenant isolation, referral journey tracking, attachments, notifications, reporting, and deployment through Docker or Render.
 
-- Shared-schema multi-tenant foundation with hospital-scoped tenancy.
-- Spring Security login and role-based access control.
-- Seeded `SUPER_ADMIN` bootstrap user.
-- Super admin dashboard.
-- Super admin CRUD for hospitals.
-- Super admin CRUD for hospital administrators.
-- Hospital directory management for departments and doctors.
-- Tenant-scoped patient registry for hospital admins.
-- Cross-hospital referral creation and tracking.
-- Internal routing of incoming referrals to departments and doctors.
-- Hospital-admin-managed user accounts for referral officers, doctors, and viewers.
-- Dedicated referral officer and doctor role workspaces.
-- Dedicated read-only viewer reporting workspace with CSV export.
-- Referral attachments with secure upload and download.
-- In-app notifications with unread counts and notification inboxes.
-- Referral timeline with status changes and notes.
-- Flyway-based schema management.
 
-## Initial roles
+## Core Objectives
 
-- `SUPER_ADMIN`
-- `HOSPITAL_ADMIN`
-- `REFERRAL_OFFICER`
-- `DOCTOR`
-- `VIEWER`
+- Provide a centralized platform for managing hospital-to-hospital referrals.
+- Allow each hospital to operate as a separate tenant with isolated records.
+- Enable super administrators to manage the whole platform.
+- Enable hospital staff to create, receive, assign, forward, and close referrals.
+- Track the complete referral journey, including multi-hop referrals from one hospital to another.
+- Improve visibility through dashboards, search, filtering, reporting, timelines, and notifications.
 
-The system now has working UI flows for `SUPER_ADMIN`, `HOSPITAL_ADMIN`, `REFERRAL_OFFICER`, `DOCTOR`, and `VIEWER`.
+## Technology Stack
 
-## Default bootstrap account
+| Layer | Technology |
+| --- | --- |
+| Backend | Spring Boot 3.5 |
+| Language | Java 21 |
+| UI | Thymeleaf, HTML, CSS |
+| Security | Spring Security |
+| Database | MySQL |
+| ORM | Spring Data JPA / Hibernate |
+| Migrations | Flyway |
+| Build Tool | Maven |
+| Testing | JUnit, Spring Boot Test, Spring Security Test, H2 |
+| Containerization | Docker, Docker Compose |
 
-Configured in `src/main/resources/application.yml`:
+## Main Features
 
-- Email: `superadmin@referrals.local`
-- Password: `ChangeMe123!`
+### Multi-Tenant Hospital Management
 
-Change this before using the system outside local development.
+- Shared-schema multi-tenancy using hospital-scoped records.
+- Super admin can create, edit, and manage hospitals.
+- Hospital admins and staff are scoped to their assigned hospital.
+- Tenant-aware referral visibility prevents ordinary users from seeing unrelated hospital data.
 
-## Local database setup
+### Authentication and Role-Based Access
 
-1. Create a MySQL database named `hospital_referrals`.
-2. Set the datasource environment variables if you are not using the defaults:
-   - `SPRING_DATASOURCE_URL`
-   - `SPRING_DATASOURCE_USERNAME`
-   - `SPRING_DATASOURCE_PASSWORD`
-3. Run the application with Maven:
+- Secure login with Spring Security.
+- Role-based dashboard routing after login.
+- Remember-me login support.
+- User accounts can be enabled or disabled.
+- Bootstrap super admin account for initial access.
+
+### Super Admin Workspace
+
+- Platform dashboard.
+- Hospital management.
+- Hospital admin management.
+- Global tenant administration.
+- Foundation for platform-level reporting and governance.
+
+### Hospital Admin Workspace
+
+- Manage departments.
+- Manage doctor profiles.
+- Manage hospital users.
+- Manage patient records.
+- Create and track referrals.
+- Route referrals internally.
+- View notifications.
+- Access referral timelines, attachments, and outcomes.
+
+### Patient Registry
+
+- Tenant-scoped patient records.
+- System-generated patient numbers.
+- Patient search and filtering.
+- Patient demographics used during referral creation.
+- Patient records remain hospital-scoped while referral journeys connect the cross-hospital case history.
+
+### Referral Management
+
+- Create outgoing referrals.
+- Receive incoming referrals.
+- Track incoming and outgoing referral queues.
+- Search and filter referrals by status, direction, patient, hospital, assignment, subject, and journey.
+- Route referrals to departments and doctors.
+- Add notes to referrals.
+- Update referral status.
+- Close referrals with final outcomes.
+- Forward referrals to another hospital when further specialist care is needed.
+
+### Referral Journey Tracking
+
+- Referrals can be linked into a journey chain.
+- A hospital that participated in an earlier referral leg can view downstream progress in the journey.
+- Example: Hospital A refers to Hospital B, then Hospital B forwards to Hospital C. Hospital A can still see the journey progress.
+- Timeline views support both individual referral events and wider journey-level context.
+
+### Referral Status and Outcome Workflow
+
+Supported workflow concepts include:
+
+| Area | Examples |
+| --- | --- |
+| Referral statuses | Submitted, Received, Under Review, Accepted, Rejected, Completed, Cancelled |
+| Priorities | Low, Normal, High, Urgent |
+| SLA states | On Track, Due Today, Overdue, Awaiting Response, Closed |
+| Closure outcomes | Treated, Admitted, Redirected, Closed Without Treatment |
+
+The system records important workflow events in the referral timeline, including status changes, routing, notes, attachments, forwarding, and final outcome updates.
+
+### Role Workspaces
+
+| Role | Main Responsibility |
+| --- | --- |
+| `SUPER_ADMIN` | Manages the whole platform, hospitals, and hospital admins. |
+| `HOSPITAL_ADMIN` | Manages hospital setup, users, patients, departments, doctors, and referrals. |
+| `REFERRAL_OFFICER` | Handles day-to-day referral operations, creation, review, routing, forwarding, and tracking. |
+| `DOCTOR` | Reviews assigned referrals, views supporting documents, and adds clinical notes. |
+| `VIEWER` | Has read-only access to dashboards, reports, notifications, and exports. |
+
+## Functional Modules
+
+### Hospital and User Administration
+
+- Hospital CRUD.
+- Hospital admin CRUD.
+- Hospital user CRUD.
+- Role assignment.
+- Department and doctor assignment.
+- Activation and deactivation support.
+
+### Department and Doctor Directory
+
+- Create and manage departments.
+- Create and manage doctor profiles.
+- Link doctors to departments.
+- Use departments and doctors for referral routing.
+- Prevent deletion of directory records that are already tied to routed referrals.
+
+### Attachments and Documents
+
+- Upload referral documents.
+- Categorize attachments, such as referral letter, lab result, imaging, and discharge summary.
+- Store attachment metadata in the database.
+- Store uploaded files on disk.
+- Secure download and inline viewing for supported file types.
+- Record attachment events in the referral timeline.
+
+### In-App Notifications
+
+- User-specific notification inbox.
+- Unread notification count.
+- Notifications for referral creation, routing, status changes, notes, attachments, and journey updates.
+- Role-aware navigation from the notifications page back to each user's workspace.
+
+### Reporting
+
+- Viewer dashboard.
+- Tenant-level operational reports.
+- Referral filtering by status, date, and search text.
+- CSV export support.
+- Summary metrics for referral visibility.
+
+### UI and Screen Design Artifacts
+
+The project includes system design mockups and presentation files:
+
+- `SYSTEM_SCREEN_DESIGNS_README.md`
+- `SYSTEM_SCREEN_DESIGNS.pdf`
+- `SYSTEM_SCREEN_DESIGNS.docx`
+- `docs/system-designs/`
+
+These files document the visual design of the login page, dashboards, patient registry, referral queue, referral detail page, doctor workspace, reports, notifications, and management screens.
+
+## Default Bootstrap Account
+
+The default bootstrap super admin can be configured through environment variables.
+
+Default local values:
+
+| Field | Value |
+| --- | --- |
+| Email | `superadmin@referrals.local` |
+| Password | `ChangeMe123!` |
+
+Change the bootstrap password before using the system outside local development.
+
+## Project Structure
+
+```text
+src/main/java/com/example/referrals
+├── common          Shared base models and helpers
+├── config          Security and startup configuration
+├── directory       Departments and doctors
+├── hospital        Hospital tenant model
+├── hospitaladmin   Hospital admin forms and services
+├── notification    In-app notification domain
+├── patient         Patient registry domain
+├── referral        Referral, timeline, journey, and attachment domain
+├── reporting       Tenant reporting service
+├── security        Custom security users and login redirects
+├── superadmin      Super admin forms and services
+├── tenant          Tenant context handling
+├── user            Application user model
+└── web             MVC controllers
+```
+
+```text
+src/main/resources
+├── db/migration    Flyway database migrations
+├── static          CSS and static assets
+└── templates       Thymeleaf pages
+```
+
+## Local Development Setup
+
+### Requirements
+
+- Java 21
+- Maven
+- MySQL 8 or compatible MySQL database
+
+### Database Setup
+
+Create a MySQL database:
+
+```sql
+CREATE DATABASE hospital_referrals;
+```
+
+Set database environment variables if your database credentials differ from the defaults:
+
+```bash
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/hospital_referrals?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+SPRING_DATASOURCE_USERNAME=root
+SPRING_DATASOURCE_PASSWORD=root
+```
+
+Run the application:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Flyway will create the schema automatically.
+Open:
 
-## Docker setup
-
-This project now includes:
-
-- `Dockerfile` for the Spring Boot application
-- `docker-compose.yml` for the app and MySQL
-- `.env.example` with the main runtime variables
-
-### Quick start
-
-1. Copy `.env.example` to `.env` if you want to customize ports, database credentials, or the bootstrap admin account.
-2. Start the containers:
-
-```bash
-docker compose up --build
+```text
+http://localhost:8080
 ```
 
-3. Open the application at `http://localhost:8080`
-4. MySQL will be available on host port `3307` by default.
+Flyway applies all database migrations automatically at startup.
 
-### Default Docker credentials
+## Environment Variables
 
-- App URL: `http://localhost:8080`
-- Database: `hospital_referrals`
-- Database user: `referrals`
-- Database password: `referrals`
-- Super admin email: `superadmin@referrals.local`
-- Super admin password: `ChangeMe123!`
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `SERVER_PORT` | Application port | `8080` |
+| `SPRING_DATASOURCE_URL` | Full JDBC URL | Built from local MySQL defaults |
+| `SPRING_DATASOURCE_USERNAME` | Database username | `root` |
+| `SPRING_DATASOURCE_PASSWORD` | Database password | `root` |
+| `DB_HOST` | Database host used when full JDBC URL is not set | `localhost` |
+| `DB_PORT` | Database port | `3306` |
+| `DB_NAME` | Database name | `hospital_referrals` |
+| `DB_USERNAME` | Alternative database username | `root` |
+| `DB_PASSWORD` | Alternative database password | `root` |
+| `APP_BOOTSTRAP_SUPER_ADMIN_EMAIL` | Bootstrap super admin email | `superadmin@referrals.local` |
+| `APP_BOOTSTRAP_SUPER_ADMIN_PASSWORD` | Bootstrap super admin password | `ChangeMe123!` |
+| `APP_STORAGE_ATTACHMENTS_DIR` | Referral attachment storage path | `storage/referral-attachments` |
 
-### Useful Docker commands
 
-```bash
-docker compose up --build
-docker compose down
-docker compose down -v
-```
+## Key User Workflows
 
-`docker compose down -v` also removes the MySQL and attachment volumes.
+### Super Admin Flow
 
-## Render deployment
+1. Create hospitals.
+2. Create hospital admins.
+3. Monitor platform setup from the super admin dashboard.
 
-This repository now includes a Render Blueprint in [render.yaml](C:/Users/jafxq/Documents/Codex/2026-04-22-i-want-you-to-help-me/render.yaml) that defines:
+### Hospital Admin Flow
 
-- `hospital-referrals-app` as a Docker-based web service
-- `hospital-referrals-db` as a Docker-based private MySQL service
-- persistent disk storage for MySQL data
-- persistent disk storage for referral attachments
+1. Create departments.
+2. Create doctor profiles.
+3. Create hospital users.
+4. Register patients.
+5. Create and manage referrals.
+6. Route referrals to departments and doctors.
+7. Track timelines, attachments, notifications, and outcomes.
 
-### Render notes
+### Referral Officer Flow
 
-- Render does not use `docker-compose.yml` for a web service deploy.
-- The application must connect to a separate private MySQL service over Render's private network.
-- The Blueprint uses `fromService` references so the app receives the MySQL host, port, database name, username, and password automatically.
+1. View referral queue.
+2. Create outgoing referrals.
+3. Review incoming referrals.
+4. Route referrals internally.
+5. Add notes and attachments.
+6. Forward referrals to another hospital when needed.
+7. Update referral status and closure outcome.
 
-### How to use on Render
+### Doctor Flow
 
-1. Push this repository with `render.yaml` and `mysql-render/Dockerfile`.
-2. In Render, create a new Blueprint from the repo.
-3. When prompted, provide secret values for:
-   - `MYSQL_PASSWORD`
-   - `MYSQL_ROOT_PASSWORD`
-   - `APP_BOOTSTRAP_SUPER_ADMIN_PASSWORD`
-4. Deploy the Blueprint.
+1. View assigned referrals.
+2. Review patient and referral details.
+3. View supporting documents.
+4. Add clinical notes.
+5. Follow referral progress.
 
-### Services created by the Blueprint
+## Known Limitations
 
-- `hospital-referrals-db`
-  - Type: Private Service
-  - Runtime: Docker
-  - Image base: MySQL 8.4
-- `hospital-referrals-app`
-  - Type: Web Service
-  - Runtime: Docker
-  - Health check: `/actuator/health`
+- Email and SMS notification delivery are not implemented yet.
+- Password reset flow is not yet implemented.
+- Attachments are stored on disk rather than object storage.
+- The tenancy model uses a shared database and shared schema with tenant-scoped records.
 
-### Important
-
-- The Blueprint is configured for the `frankfurt` region. Change this in `render.yaml` if you want another Render region.
-- Both services use the `starter` plan because private services and persistent disks are not a free-tier-style setup.
-
-## Recommended next increments
-
-1. Email and SMS delivery channels for important notifications.
-2. Password reset, email integration, and account hardening.
-3. Attachment review workflows and approval states.
-4. Escalation rules for overdue or unacknowledged referrals.
-5. Extended file validation, previews, and image/PDF rendering.
-6. Global super-admin reporting across all tenants.
