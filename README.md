@@ -113,7 +113,6 @@ The system records important workflow events in the referral timeline, including
 | `HOSPITAL_ADMIN` | Manages hospital setup, users, patients, departments, doctors, and referrals. |
 | `REFERRAL_OFFICER` | Handles day-to-day referral operations, creation, review, routing, forwarding, and tracking. |
 | `DOCTOR` | Reviews assigned referrals, views supporting documents, and adds clinical notes. |
-| `VIEWER` | Has read-only access to dashboards, reports, notifications, and exports. |
 
 ## Functional Modules
 
@@ -157,30 +156,6 @@ The system records important workflow events in the referral timeline, including
 - Referral filtering by status, date, and search text.
 - CSV export support.
 - Summary metrics for referral visibility.
-
-### UI and Screen Design Artifacts
-
-The project includes system design mockups and presentation files:
-
-- `SYSTEM_SCREEN_DESIGNS_README.md`
-- `SYSTEM_SCREEN_DESIGNS.pdf`
-- `SYSTEM_SCREEN_DESIGNS.docx`
-- `docs/system-designs/`
-
-These files document the visual design of the login page, dashboards, patient registry, referral queue, referral detail page, doctor workspace, reports, notifications, and management screens.
-
-## Default Bootstrap Account
-
-The default bootstrap super admin can be configured through environment variables.
-
-Default local values:
-
-| Field | Value |
-| --- | --- |
-| Email | `superadmin@referrals.local` |
-| Password | `ChangeMe123!` |
-
-Change the bootstrap password before using the system outside local development.
 
 ## Project Structure
 
@@ -301,10 +276,5 @@ Flyway applies all database migrations automatically at startup.
 4. Add clinical notes.
 5. Follow referral progress.
 
-## Known Limitations
 
-- Email and SMS notification delivery are not implemented yet.
-- Password reset flow is not yet implemented.
-- Attachments are stored on disk rather than object storage.
-- The tenancy model uses a shared database and shared schema with tenant-scoped records.
 
